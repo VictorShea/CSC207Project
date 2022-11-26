@@ -2,9 +2,11 @@ package Game.View;
 import javafx.animation.KeyFrame;
 import javafx.animation.Timeline;
 import javafx.event.EventHandler;
+import javafx.geometry.Insets;
 import javafx.scene.Scene;
 import javafx.scene.canvas.Canvas;
 import javafx.scene.canvas.GraphicsContext;
+import javafx.scene.control.ListView;
 import javafx.scene.input.KeyEvent;
 import javafx.scene.input.MouseEvent;
 import javafx.scene.layout.BorderPane;
@@ -12,6 +14,7 @@ import javafx.scene.layout.HBox;
 import javafx.scene.layout.Pane;
 import javafx.scene.layout.VBox;
 import javafx.scene.paint.Color;
+import javafx.scene.text.Font;
 import javafx.scene.text.TextAlignment;
 import javafx.stage.Stage;
 import javafx.scene.canvas.Canvas;
@@ -35,6 +38,8 @@ public class View {
     TextField wordDisplay;
     GraphicsContext gc; //linked to canvas
     List<TupleInt> selectedPoint;
+    Label ScoreLabel;
+    Label timerLabel;
     int time;
     int size = 5;
     final int blockSize = 100;
@@ -54,7 +59,6 @@ public class View {
 
         gc = canvas.getGraphicsContext2D();
 
-        borderPane.setCenter(canvas);
         canvas.setOnMouseClicked(new EventHandler<MouseEvent>() {
             @Override
             public void handle(MouseEvent k) {
@@ -97,25 +101,65 @@ public class View {
 
             }
         });
-        var scene = new Scene(borderPane, size * blockSize, size * blockSize);
+        var scene = new Scene(borderPane, size * blockSize + 200, size * blockSize + 100);
         wordDisplay = new TextField();
-        VBox hb = new VBox();
-        Label ScoreLabel = new Label("Point: 0");
+        BorderPane display = new BorderPane();
+        ScoreLabel = new Label("Point: 0");
+        ScoreLabel.setFont(new Font(30));
         ScoreLabel.setId("ScoreLabel");
         ScoreLabel.setTextFill(Color.RED);
-        hb.getChildren().addAll(wordDisplay, ScoreLabel);
+
+        timerLabel = new Label(Integer.toString(time));
+        timerLabel.setFont(new Font(30));
+        timerLabel.setId("TimerLabel");
+        timerLabel.setTextFill(Color.RED);
+
+        display.setTop(wordDisplay);
+        display.setLeft(ScoreLabel);
+        display.setRight(timerLabel);
+
         wordDisplay.setEditable(false);
-        borderPane.setTop(hb);
+
+        ListView<String> listView =new ListView<>();
+        listView.getItems().add("Test");
+
+        BorderPane mainPane = new BorderPane();
+        mainPane.setCenter(canvas);
+        mainPane.setTop(display);
+        mainPane.setPadding(new Insets(10, 20, 10, 20));
+
+        borderPane.setCenter(mainPane);
+        borderPane.setRight(listView);
+
+
 
         this.stage.setScene(scene);
         this.stage.show();
 
 
+
         this.model.playRound();
+        time = model.timer;
+        timeLine = new Timeline(new KeyFrame(Duration.seconds(1), e -> Timer()));
+        timeLine.setCycleCount(Timeline.INDEFINITE);
+        timeLine.play();
 
         redraw();
     }
 
+    private void Timer(){
+        time += -1;
+        timerLabel.setText(Integer.toString(time));
+        System.out.println(time);
+        if(time <= 0){
+            if (!model.timer()){
+                timeLine.stop();
+            }
+            else{
+                time = model.timer;
+            }
+        }
+    }
 
     private String getSelectedPointWord(){
         StringBuilder out = new StringBuilder();
