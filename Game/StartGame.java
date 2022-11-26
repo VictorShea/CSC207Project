@@ -1,6 +1,7 @@
+package Game;
 
-import Model.Controller;
-import View.View;
+import Game.Model.Controller;
+import Game.View.View;
 import javafx.application.Application;
 import javafx.stage.Stage;
 
