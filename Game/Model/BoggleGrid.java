@@ -5,7 +5,6 @@ package Game.Model;
  * The BoggleGrid represents the grid on which we play Boggle 
  */
 public class BoggleGrid {
-
     /**
      * size of grid
      */  
