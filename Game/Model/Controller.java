@@ -69,11 +69,15 @@ public class Controller {
         return true;
     }
 
-    public String currentPlayer(){
+    public String getCurrentPlayer(){
         return "Test";
     }
 
     public String[] wordList(){
         return new String[]{"asd", "aasd2", "asd23"};
+    }
+
+    public int getPoint(){
+        return 1;
     }
 }

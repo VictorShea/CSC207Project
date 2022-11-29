@@ -44,6 +44,7 @@ public class View {
         selectedPoint = new LinkedList<>();
 
         this.stage = stage;
+
         this.model = model;
         this.stage.setTitle("CSC207 Project");
 
@@ -60,6 +61,7 @@ public class View {
             @Override
             public void handle(MouseEvent k) {
                 model.inputWord(getSelectedPointWord());
+                UpdateWordDIsplay();
                 selectedPoint.clear();
                 redraw();
                 wordDisplay.setText("");
@@ -98,7 +100,6 @@ public class View {
 
             }
         });
-        var scene = new Scene(borderPane, size * blockSize + 200, size * blockSize + 150);
         wordDisplay = new TextField();
         BorderPane display = new BorderPane();
         ScoreLabel = new Label("Point: 0");
@@ -143,6 +144,7 @@ public class View {
         borderPane.setRight(WordList);
 
 
+        Scene scene = new Scene(borderPane, size * blockSize + 200, size * blockSize + 150);
 
         this.stage.setScene(scene);
         this.stage.show();
@@ -159,7 +161,8 @@ public class View {
     }
 
     private void UpdateWordDIsplay(){
-
+        WordList.getItems().clear();
+        WordList.getItems().addAll(model.wordList());
     }
 
     private void UpdateRoundLabel(){
