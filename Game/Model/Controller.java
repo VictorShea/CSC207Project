@@ -58,14 +58,22 @@ public class Controller {
     }
 
     //Called every timer seconds
-    public boolean timer(){
+    public int timer(){
         System.out.println("timer reached");
-        return true;
+        return 1;
     }
 
     //input word (unchecked)
     public boolean inputWord(String word){
         System.out.println(word);
         return true;
+    }
+
+    public String currentPlayer(){
+        return "Test";
+    }
+
+    public String[] wordList(){
+        return new String[]{"asd", "aasd2", "asd23"};
     }
 }

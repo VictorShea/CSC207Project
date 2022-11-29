@@ -9,9 +9,11 @@ import javafx.scene.canvas.GraphicsContext;
 import javafx.scene.control.ListView;
 import javafx.scene.input.MouseEvent;
 import javafx.scene.layout.BorderPane;
+import javafx.scene.layout.VBox;
 import javafx.scene.paint.Color;
 import javafx.scene.text.Font;
 import javafx.scene.text.TextAlignment;
+import javafx.stage.Popup;
 import javafx.stage.Stage;
 import javafx.scene.control.TextField;
 import javafx.scene.control.Label;
@@ -35,6 +37,9 @@ public class View {
     int time;
     int size = 5;
     final int blockSize = 100;
+    Label roundLabel;
+    Label PlayerNameLabel;
+    ListView<String> WordList;
     public View(Stage stage, Controller model) {
         selectedPoint = new LinkedList<>();
 
@@ -93,7 +98,7 @@ public class View {
 
             }
         });
-        var scene = new Scene(borderPane, size * blockSize + 200, size * blockSize + 100);
+        var scene = new Scene(borderPane, size * blockSize + 200, size * blockSize + 150);
         wordDisplay = new TextField();
         BorderPane display = new BorderPane();
         ScoreLabel = new Label("Point: 0");
@@ -110,18 +115,32 @@ public class View {
         display.setLeft(ScoreLabel);
         display.setRight(timerLabel);
 
+        BorderPane SecondaryDisplay = new BorderPane();
+        roundLabel = new Label();
+        PlayerNameLabel = new Label();
+        UpdateRoundLabel();
+        roundLabel.setFont(new Font(30));
+        roundLabel.setTextFill(Color.RED);
+        PlayerNameLabel.setFont(new Font(30));
+        PlayerNameLabel.setTextFill(Color.RED);
+
+        SecondaryDisplay.setRight(roundLabel);
+        SecondaryDisplay.setLeft(PlayerNameLabel);
+
+        VBox MainDisplay = new VBox(SecondaryDisplay, display);
+
         wordDisplay.setEditable(false);
 
-        ListView<String> listView =new ListView<>();
-        listView.getItems().add("Test");
+        WordList =new ListView<>();
+        WordList.getItems().add("Test");
 
         BorderPane mainPane = new BorderPane();
         mainPane.setCenter(canvas);
-        mainPane.setTop(display);
+        mainPane.setTop(MainDisplay);
         mainPane.setPadding(new Insets(10, 20, 10, 20));
 
         borderPane.setCenter(mainPane);
-        borderPane.setRight(listView);
+        borderPane.setRight(WordList);
 
 
 
@@ -139,17 +158,33 @@ public class View {
         redraw();
     }
 
+    private void UpdateWordDIsplay(){
+
+    }
+
+    private void UpdateRoundLabel(){
+        roundLabel.setText(Integer.toString(model.curRounds) + "/" + Integer.toString(model.rounds));
+        PlayerNameLabel.setText(model.playerName);
+    }
+
     private void Timer(){
         time += -1;
         timerLabel.setText(Integer.toString(time));
         System.out.println(time);
         if(time <= 0){
-            if (!model.timer()){
+            int state = model.timer();
+            if (state == 2){
                 timeLine.stop();
+                EndGame();
+            }
+            if (state == 1){
+                timeLine.stop();
+                showRoundEndMenu();
             }
             else{
                 time = model.timer;
             }
+            UpdateRoundLabel();
         }
     }
 
@@ -161,6 +196,25 @@ public class View {
         return  (out.toString());
 
     }
+
+    public void startRound(){
+        model.playRound();
+        time = model.timer;
+        UpdateRoundLabel();
+        timeLine.playFromStart();
+        redraw();
+    }
+
+    private void showRoundEndMenu(){
+        timeLine.stop();
+        new roundEndPopup(this);
+        System.out.println("test");
+    }
+
+    private void EndGame(){
+
+    }
+
     private int selectedPointContain(int x, int y){
         for(int i = 0; i < selectedPoint.size(); i++){
             if (selectedPoint.get(i).x == x && selectedPoint.get(i).y == y){
