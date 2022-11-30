@@ -90,7 +90,7 @@ public class View {
                 if(index == -1){
                     selectedPoint.add(new TupleInt(loc_x, loc_y));
                     redraw();
-                    wordDisplay.setText(wordDisplay.getText() + model.boggleGrid.getStrAt(loc_x, loc_y));
+                    wordDisplay.setText(wordDisplay.getText() + model.grid.getStrAt(loc_x, loc_y));
                 }
                 else if (index != selectedPoint.size() - 1){
                     System.out.println("ads");
@@ -164,12 +164,12 @@ public class View {
 
     private void UpdateWordDIsplay(){
         WordList.getItems().clear();
-        WordList.getItems().addAll(model.wordList());
+        WordList.getItems().addAll(model.wordlist());
     }
 
     private void UpdateRoundLabel(){
         roundLabel.setText(Integer.toString(model.curRounds) + "/" + Integer.toString(model.rounds));
-        PlayerNameLabel.setText(model.getCurrentPlayer());
+        PlayerNameLabel.setText(model.getPlayerName());
     }
 
     private void Timer(){
@@ -196,7 +196,7 @@ public class View {
     private String getSelectedPointWord(){
         StringBuilder out = new StringBuilder();
         for (TupleInt point: selectedPoint ){
-            out.append(model.boggleGrid.getStrAt(point.x, point.y));
+            out.append(model.grid.getStrAt(point.x, point.y));
         }
         return  (out.toString());
 
@@ -246,7 +246,7 @@ public class View {
                 }
                 else {gc.setFill(Color.RED);}
                 gc.fillRect((blockSize * i) + shift, (blockSize * j) + shift, blockSize - (2 * shift), blockSize - (2 * shift));
-                gc.strokeText(model.boggleGrid.getStrAt(i, j), blockSize * i + (blockSize / 2), blockSize * j + (blockSize / 2));
+                gc.strokeText(model.grid.getStrAt(i, j), blockSize * i + (blockSize / 2), blockSize * j + (blockSize / 2));
 
             }
         }

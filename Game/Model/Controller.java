@@ -5,8 +5,8 @@ import java.util.*;
 public class Controller {
     private int size;
     public int timer;
-    private int rounds;
-    private int curRounds;
+    public int rounds;
+    public int curRounds;
     private State currentState;
     private Gamemode gamemode;
     private NewStats stats;

@@ -21,11 +21,11 @@ public class roundEndPopup {
     public roundEndPopup(View view)
     {
         String p1_name = view.model.getPlayerName(0);
-        int p1_cur_score = view.model.getPoint(0);
+        int p1_cur_score = view.model.getPoints(0);
         int p1_tot_score = view.model.getTotalScore(0);
 
         String p2_name = view.model.getPlayerName(1);
-        int p2_cur_score = view.model.getPoint(1);
+        int p2_cur_score = view.model.getPoints(1);
         int p2_tot_score = view.model.getTotalScore(1);
 
         this.view = view;
