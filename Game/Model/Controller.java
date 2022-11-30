@@ -9,7 +9,7 @@ public class Controller {
     private int curRounds;
     private State currentState;
     private Gamemode gamemode;
-    private BoggleStats stats;
+    private NewStats stats;
     public BoggleGrid grid;
     private Dictionary dict;
     private HashMap<String, ArrayList<Position>> allWords;
@@ -23,7 +23,7 @@ public class Controller {
         this.currentState = State.You;
         if(gameMode) {this.gamemode = Gamemode.Human;}
         else{this.gamemode = Gamemode.Computer;}
-        this.stats = new BoggleStats();
+        this.stats = new NewStats();
         this.dict = new Dictionary("wordlist.txt");
         this.allWords = new HashMap<String, ArrayList<Position>>();
     }
@@ -200,7 +200,7 @@ public class Controller {
     private void computerMove(){
         for (String word : this.allWords.keySet()){
             if(!this.stats.getPlayerWords().contains(word.toLowerCase())){
-                this.stats.addWord(word.toLowerCase(), BoggleStats.Player.Other);
+                this.stats.addWord(word.toLowerCase(), NewStats.Player.Other);
             }
         }
     }
@@ -213,12 +213,12 @@ public class Controller {
             return false;
         }
         if(this.currentState == State.You){
-            BoggleStats.Player player = BoggleStats.Player.Human;
+            NewStats.Player player = NewStats.Player.Human;
             this.stats.addWord(word.toLowerCase(), player);
 
         }
         else if(this.currentState == State.Opponent){
-            BoggleStats.Player player = BoggleStats.Player.Other;
+            NewStats.Player player = NewStats.Player.Other;
             this.stats.addWord(word.toLowerCase(), player);
         }
         return true;
