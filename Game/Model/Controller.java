@@ -6,7 +6,7 @@ import java.util.Dictionary;
 public class Controller {
     public int size;
     public int timer;
-    public String gameMode;
+    public boolean gameMode;
     public int rounds;
     public int curRounds;
     public BoggleGrid boggleGrid;
@@ -20,7 +20,7 @@ public class Controller {
         //step 3. find all legal words on the board, given the dictionary and grid arrangement.
     }
 
-    public Controller(int size, int timer, String gameMode, int rounds){
+    public Controller(int size, int timer, boolean gameMode, int rounds){
         this.size = size;
         this.timer = timer;
         this.gameMode = gameMode;
@@ -28,13 +28,11 @@ public class Controller {
         this.curRounds = 0;
     }
 
-    //Called every timer seconds
     public int timer(){
         System.out.println("timer reached");
         return 1;
     }
 
-    //input word (unchecked)
     public boolean inputWord(String word){
         System.out.println(word);
         return true;
@@ -49,6 +47,23 @@ public class Controller {
     }
 
     public int getPoint(){
+        return 1;
+    }
+
+    public int getPoint(int marker){
+        return 0;
+    }
+    public String getPlayerName(){
+        return "afg";
+    }
+
+    public String getPlayerName(int marker){
+        return "asAS";
+    }
+    public int getTotalScore(int marker){
+        return marker;
+    }
+    public int getTotalScore(){
         return 1;
     }
 }

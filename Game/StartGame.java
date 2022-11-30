@@ -7,7 +7,7 @@ import javafx.stage.Stage;
 
 
 public class StartGame {
-    public StartGame(Stage stage, int size, int timer, String gameMode, int rounds){
+    public StartGame(Stage stage, int size, int timer, boolean gameMode, int rounds){
         Controller model = new Controller(size, timer, gameMode, rounds);
         View view = new View(stage, model);
     }

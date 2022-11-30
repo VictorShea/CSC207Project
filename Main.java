@@ -10,6 +10,6 @@ public class Main extends Application{
 
     @Override
     public void start(Stage stage) throws Exception {
-        new StartGame(stage, 5, 10, "asd", 5);
+        new StartGame(stage, 5, 10, true, 5);
     }
 }
