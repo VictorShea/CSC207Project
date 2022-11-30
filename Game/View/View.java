@@ -19,6 +19,7 @@ import javafx.scene.control.TextField;
 import javafx.scene.control.Label;
 import java.util.LinkedList;
 import java.util.List;
+import java.util.Objects;
 
 import Game.Model.Controller;
 import javafx.util.Duration;
@@ -158,6 +159,7 @@ public class View {
         timeLine.play();
 
         redraw();
+        
     }
 
     private void UpdateWordDIsplay(){
@@ -167,7 +169,7 @@ public class View {
 
     private void UpdateRoundLabel(){
         roundLabel.setText(Integer.toString(model.curRounds) + "/" + Integer.toString(model.rounds));
-        PlayerNameLabel.setText(model.playerName);
+        PlayerNameLabel.setText(model.getCurrentPlayer());
     }
 
     private void Timer(){
@@ -201,9 +203,11 @@ public class View {
     }
 
     public void startRound(){
+        selectedPoint.clear();
         model.playRound();
         time = model.timer;
         UpdateRoundLabel();
+        UpdateWordDIsplay();
         timeLine.playFromStart();
         redraw();
     }
@@ -243,6 +247,7 @@ public class View {
                 else {gc.setFill(Color.RED);}
                 gc.fillRect((blockSize * i) + shift, (blockSize * j) + shift, blockSize - (2 * shift), blockSize - (2 * shift));
                 gc.strokeText(model.boggleGrid.getStrAt(i, j), blockSize * i + (blockSize / 2), blockSize * j + (blockSize / 2));
+
             }
         }
     }
