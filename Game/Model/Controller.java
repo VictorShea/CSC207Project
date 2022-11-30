@@ -3,27 +3,27 @@ package Game.Model;
 import java.util.*;
 
 public class Controller {
-    public int size;
+    private int size;
     public int timer;
-    public int rounds;
-    public int curRounds;
-    public String playerName;
-    public State currentState;
-    public Gamemode gamemode;
+    private int rounds;
+    private int curRounds;
+    private State currentState;
+    private Gamemode gamemode;
     private BoggleStats stats;
-    private BoggleGrid grid;
+    public BoggleGrid grid;
     private Dictionary dict;
     private HashMap<String, ArrayList<Position>> allWords;
 
-    public Controller(int size, int timer, String gameMode, int rounds, BoggleStats stats){
+
+    public Controller(int size, int timer, boolean gameMode, int rounds){
         this.size = size;
         this.timer = timer;
         this.rounds = rounds;
         this.curRounds = 0;
         this.currentState = State.You;
-        if(Objects.equals(gameMode, "Computer")) {this.gamemode = Gamemode.Computer;}
-        else{this.gamemode = Gamemode.Human;}
-        this.stats = stats;
+        if(gameMode) {this.gamemode = Gamemode.Human;}
+        else{this.gamemode = Gamemode.Computer;}
+        this.stats = new BoggleStats();
         this.dict = new Dictionary("wordlist.txt");
         this.allWords = new HashMap<String, ArrayList<Position>>();
     }
@@ -157,6 +157,8 @@ public class Controller {
     }
 
     public void playRound(){
+        //Clear past stats
+        this.stats.newRound();
         // Initialize a board
         initializeBoard(this.size);
         //Get all legal words
@@ -223,11 +225,69 @@ public class Controller {
     }
 
     //display new words
-    public Set<String> currentWords(){
+    public Set<String> wordlist(){
        if(this.currentState == State.You){
            return this.stats.getPlayerWords();
        }
        else{return this.stats.getOpponentWords();}
+    }
+
+    public int getPoints(){
+        if(this.currentState == State.You){
+            return this.stats.getScorePlayer();
+        }
+        return this.stats.getScoreOther();
+    }
+    public int getPoints(int marker){
+        if(marker == 0){
+            return this.stats.getScorePlayer();
+        }
+        return this.stats.getScoreOther();
+    }
+
+    //returns the current player
+    public String getPlayerName(){
+        if(this.gamemode == Gamemode.Computer){
+            if(this.currentState == State.You){
+                return "Player";
+            }
+            else{return "Computer";}
+        }
+
+        if(this.currentState == State.You){
+            return "Player 1";
+        }
+        return "Player 2";
+    }
+
+    //returns the specified player
+    public String getPlayerName(int marker){
+        if(marker==0){
+            if(this.gamemode == Gamemode.Computer){
+                return "Player";
+            }
+            else{return "Player 1";}
+        }
+        else{
+            if(this.gamemode == Gamemode.Computer){
+                return "Computer";
+            }
+            else{return "Player 2";}
+        }
+    }
+
+    public int getTotalScore(){
+        if(this.currentState == State.You){
+            return this.stats.getTotalPlayer();
+        }
+        return this.stats.getTotalOther();
+    }
+
+    public int getTotalScore(int marker){
+        if(marker == 0){
+            return this.stats.getTotalPlayer();
+        }
+        return this.stats.getTotalOther();
     }
 
     public enum Gamemode {
