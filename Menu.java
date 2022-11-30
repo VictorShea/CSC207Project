@@ -73,6 +73,12 @@ public class Menu extends Application{
         Menu();
     }
 
+    /**
+     * openMenu method. This method will be used to open up the menu again after the user finishes a game.
+     */
+    public void openMenu(){
+        Menu();
+    }
 
     /**
      * setUpButtons method. Configures all Buttons, Sliders, and Labels.
@@ -216,7 +222,7 @@ public class Menu extends Application{
         //sends them to the appropriate sub menu.
 
         startButton.setOnAction(e -> {
-//            StartGame();
+//            StartGame(stage, size, timeValue, human, roundsValue, this);
             gridPane.requestFocus();
             throw new java.lang.UnsupportedOperationException("Not supported yet.");
         });
