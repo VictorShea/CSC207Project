@@ -41,8 +41,8 @@ public class Menu extends Application{
 
     private int size = 4;
     private boolean human = true;
-    private int timeValue;
-    private int roundsValue;
+    private int timeValue = 60;
+    private int roundsValue = 5;
 
     /**
      * Main method
