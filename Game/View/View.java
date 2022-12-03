@@ -1,4 +1,6 @@
 package Game.View;
+import Game.GameMenu;
+
 import javafx.animation.KeyFrame;
 import javafx.animation.Timeline;
 import javafx.event.EventHandler;
@@ -18,7 +20,7 @@ import javafx.scene.control.TextField;
 import javafx.scene.control.Label;
 import java.util.LinkedList;
 import java.util.List;
-import Game.View.Converter;
+
 import Game.Model.GameController;
 import javafx.util.Duration;
 
@@ -40,7 +42,11 @@ public class View {
     Label PlayerNameLabel;
     ListView<String> WordList;
     TupleInt Current;
-    public View(Stage stage, GameController model) {
+    GameMenu menu;
+    Boolean gameClosed;
+    public View(Stage stage, GameController model, GameMenu menu) {
+        gameClosed = false;
+        this.menu = menu;
         Current = new TupleInt(-1, -1);
         selectedPoint = new LinkedList<>();
 
@@ -211,7 +217,9 @@ public class View {
         if(time <= 0){
             int state = model.timer();
             if (state == 2){
+                System.out.println("asas,dadkjasdd");
                 timeLine.stop();
+                showRoundEndMenu();
                 EndGame();
             }
             if (state == 1){
@@ -235,6 +243,9 @@ public class View {
     }
 
     public void startRound(){
+        if(gameClosed){
+            return;
+        }
         selectedPoint.clear();
         model.playRound();
         time = model.timer;
@@ -251,7 +262,9 @@ public class View {
     }
 
     private void EndGame(){
-
+        gameClosed = true;
+        timeLine.stop();
+        menu.openMenu();
     }
 
     private int selectedPointContain(int x, int y){
