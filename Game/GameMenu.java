@@ -1,3 +1,5 @@
+package Game;
+
 import Game.StartGame;
 import javafx.animation.FadeTransition;
 import javafx.application.Application;
@@ -16,7 +18,7 @@ import javafx.util.Duration;
  * Includes 3 submenus Menu, Settings, and Load Menu
  */
 
-public class Menu extends Application{
+public class GameMenu extends Application{
     Stage stage;
     Button startButton, loadButton, settingsButton; //buttons for functions
     Button PlayerButton, SizeButton,  settingsButton2; //buttons for functions
@@ -52,7 +54,7 @@ public class Menu extends Application{
      */
 
     public static void main(String[] args) {
-        launch(args);
+        Application.launch(args);
     }
 
     /**
@@ -78,7 +80,7 @@ public class Menu extends Application{
      * openMenu method. This method will be used to open up the menu again after the user finishes a game.
      */
     public void openMenu(){
-        Menu();
+        start(stage);
     }
 
     /**
@@ -223,7 +225,7 @@ public class Menu extends Application{
         //sends them to the appropriate sub menu.
 
         startButton.setOnAction(e -> {
-            new StartGame(stage, size, timeValue, human, roundsValue);
+            new StartGame(stage, size, timeValue, human, roundsValue, this);
             gridPane.requestFocus();
         });
 

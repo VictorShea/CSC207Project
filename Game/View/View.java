@@ -1,4 +1,6 @@
 package Game.View;
+import Game.GameMenu;
+
 import javafx.animation.KeyFrame;
 import javafx.animation.Timeline;
 import javafx.event.EventHandler;
@@ -39,7 +41,13 @@ public class View {
     Label roundLabel;
     Label PlayerNameLabel;
     ListView<String> WordList;
-    public View(Stage stage, GameController model) {
+    TupleInt Current;
+    GameMenu menu;
+    Boolean gameClosed;
+    public View(Stage stage, GameController model, GameMenu menu) {
+        gameClosed = false;
+        this.menu = menu;
+        Current = new TupleInt(-1, -1);
         selectedPoint = new LinkedList<>();
 
         this.stage = stage;
@@ -68,11 +76,40 @@ public class View {
                 wordDisplay.setText("");
             }
         });
+        canvas.setOnMouseMoved(new EventHandler<MouseEvent>() {
+            @Override
+            public void handle(MouseEvent k) {
+                int loc_x = (int)(k.getX() / blockSize);
+                int loc_y = (int)(k.getY() / blockSize);
+                System.out.println(loc_x + " " + loc_y);
+                if(Current.x != loc_x || Current.y != loc_y){
+                    System.out.println(model.grid.getStrAt(loc_x, loc_y));
+                    Converter.playSound(model.grid.getStrAt(loc_x, loc_y));
+                }
+                Current = new TupleInt(loc_x, loc_y);
+
+            }
+        });
+
+        canvas.setOnMouseExited(new EventHandler<MouseEvent>() {
+            @Override
+            public void handle(MouseEvent mouseEvent) {
+                Current = new TupleInt(-1, -1);
+            }
+        });
+
         canvas.setOnMouseDragged(new EventHandler<MouseEvent>() {
             @Override
             public void handle(MouseEvent k) {
                 int loc_x = (int)(k.getX() / blockSize);
                 int loc_y = (int)(k.getY() / blockSize);
+                if(Current.x != loc_x || Current.y != loc_y){
+                    System.out.println(model.grid.getStrAt(loc_x, loc_y));
+                    Converter.playSound(model.grid.getStrAt(loc_x, loc_y));
+                }
+                Current = new TupleInt(loc_x, loc_y);
+
+
                 if (loc_x < 0 || loc_x >= size || loc_y < 0 || loc_y >= size){
                     return;
                 }
@@ -180,7 +217,9 @@ public class View {
         if(time <= 0){
             int state = model.timer();
             if (state == 2){
+                System.out.println("asas,dadkjasdd");
                 timeLine.stop();
+                showRoundEndMenu();
                 EndGame();
             }
             if (state == 1){
@@ -204,6 +243,9 @@ public class View {
     }
 
     public void startRound(){
+        if(gameClosed){
+            return;
+        }
         selectedPoint.clear();
         model.playRound();
         time = model.timer;
@@ -220,7 +262,9 @@ public class View {
     }
 
     private void EndGame(){
-
+        gameClosed = true;
+        timeLine.stop();
+        menu.openMenu();
     }
 
     private int selectedPointContain(int x, int y){
