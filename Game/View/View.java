@@ -13,20 +13,18 @@ import javafx.scene.layout.VBox;
 import javafx.scene.paint.Color;
 import javafx.scene.text.Font;
 import javafx.scene.text.TextAlignment;
-import javafx.stage.Popup;
 import javafx.stage.Stage;
 import javafx.scene.control.TextField;
 import javafx.scene.control.Label;
 import java.util.LinkedList;
 import java.util.List;
-import java.util.Objects;
 
-import Game.Model.Controller;
+import Game.Model.GameController;
 import javafx.util.Duration;
 
 public class View {
     Timeline timeLine;
-    Controller model;
+    GameController model;
     Stage stage;
     BorderPane borderPane;
     Canvas canvas;
@@ -41,12 +39,14 @@ public class View {
     Label roundLabel;
     Label PlayerNameLabel;
     ListView<String> WordList;
-    public View(Stage stage, Controller model) {
+    public View(Stage stage, GameController model) {
         selectedPoint = new LinkedList<>();
 
         this.stage = stage;
 
         this.model = model;
+        this.size = model.size;
+
         this.stage.setTitle("CSC207 Project");
 
         borderPane = new BorderPane();
@@ -153,6 +153,7 @@ public class View {
 
 
         this.model.playRound();
+        System.out.println("asd");
         time = model.timer;
         timeLine = new Timeline(new KeyFrame(Duration.seconds(1), e -> Timer()));
         timeLine.setCycleCount(Timeline.INDEFINITE);
