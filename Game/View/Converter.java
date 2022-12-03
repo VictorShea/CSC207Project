@@ -31,7 +31,7 @@ class Converter {
     }
 
     public static void playSound(String letter){
-        String filename = "CSC207Project/Alphabet/" + letter + ".wav";
+        String filename = "Alphabet/" + letter + ".wav";
         try {
             File musicPath = new File(filename);
             if (musicPath.exists()) {
