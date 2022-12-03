@@ -1,3 +1,4 @@
+import Game.StartGame;
 import javafx.animation.FadeTransition;
 import javafx.application.Application;
 import javafx.stage.Stage;
@@ -222,9 +223,8 @@ public class Menu extends Application{
         //sends them to the appropriate sub menu.
 
         startButton.setOnAction(e -> {
-//            StartGame(stage, size, timeValue, human, roundsValue, this);
+            new StartGame(stage, size, timeValue, human, roundsValue);
             gridPane.requestFocus();
-            throw new java.lang.UnsupportedOperationException("Not supported yet.");
         });
 
         loadButton.setOnAction(e -> {
