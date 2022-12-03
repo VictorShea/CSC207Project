@@ -1,4 +1,4 @@
-// Java program implementing Singleton class
+package Game.View;// Java program implementing Singleton class
 // with using getInstance() method
 
 

@@ -18,7 +18,7 @@ import javafx.scene.control.TextField;
 import javafx.scene.control.Label;
 import java.util.LinkedList;
 import java.util.List;
-
+import Game.View.Converter;
 import Game.Model.GameController;
 import javafx.util.Duration;
 
@@ -39,7 +39,9 @@ public class View {
     Label roundLabel;
     Label PlayerNameLabel;
     ListView<String> WordList;
+    TupleInt Current;
     public View(Stage stage, GameController model) {
+        Current = new TupleInt(-1, -1);
         selectedPoint = new LinkedList<>();
 
         this.stage = stage;
@@ -68,11 +70,27 @@ public class View {
                 wordDisplay.setText("");
             }
         });
+        canvas.setOnMouseMoved(new EventHandler<MouseEvent>() {
+            @Override
+            public void handle(MouseEvent k) {
+                int loc_x = (int)(k.getX() / blockSize);
+                int loc_y = (int)(k.getY() / blockSize);
+                if(Current.x != loc_x && Current.y != loc_y){
+                    Converter.playSound(model.grid.getStrAt(loc_x, loc_y));
+                }
+                Current = new TupleInt(loc_x, loc_y);
+
+            }
+        });
         canvas.setOnMouseDragged(new EventHandler<MouseEvent>() {
             @Override
             public void handle(MouseEvent k) {
                 int loc_x = (int)(k.getX() / blockSize);
                 int loc_y = (int)(k.getY() / blockSize);
+                if(Current.x != loc_x && Current.y != loc_y){
+                    Converter.playSound(model.grid.getStrAt(loc_x, loc_y));
+                }
+
                 if (loc_x < 0 || loc_x >= size || loc_y < 0 || loc_y >= size){
                     return;
                 }
