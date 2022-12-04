@@ -1,4 +1,5 @@
 package Game.View;
+
 import Game.GameMenu;
 
 import javafx.animation.KeyFrame;
@@ -8,19 +9,24 @@ import javafx.geometry.Insets;
 import javafx.scene.Scene;
 import javafx.scene.canvas.Canvas;
 import javafx.scene.canvas.GraphicsContext;
+import javafx.scene.control.ListCell;
 import javafx.scene.control.ListView;
 import javafx.scene.input.MouseEvent;
-import javafx.scene.layout.BorderPane;
-import javafx.scene.layout.VBox;
+import javafx.scene.layout.*;
 import javafx.scene.paint.Color;
 import javafx.scene.text.Font;
 import javafx.scene.text.TextAlignment;
+import javafx.stage.Popup;
 import javafx.stage.Stage;
 import javafx.scene.control.TextField;
 import javafx.scene.control.Label;
+
+import java.io.IOException;
+import java.util.HashMap;
 import java.util.LinkedList;
 import java.util.List;
-
+import java.util.Objects;
+import Game.View.DefinitionProcess;
 import Game.Model.GameController;
 import javafx.util.Duration;
 
@@ -43,7 +49,12 @@ public class View {
     ListView<String> WordList;
     TupleInt Current;
     GameMenu menu;
+    Popup wordDefinition;
     Boolean gameClosed;
+    Label wordDefinitionLabel;
+    String CurrentWord;
+    String ActiveWord;
+    Label wordDefinitionTitle;
     public View(Stage stage, GameController model, GameMenu menu) {
         gameClosed = false;
         this.menu = menu;
@@ -54,17 +65,18 @@ public class View {
 
         this.model = model;
         this.size = model.size;
-
+        ActiveWord = "";
         this.stage.setTitle("CSC207 Project");
 
         borderPane = new BorderPane();
-        borderPane.setStyle("-fx-background-color: #121212;");
+        borderPane.setBackground(new Background(new BackgroundFill(Color.BLACK, CornerRadii.EMPTY, Insets.EMPTY)));
 
         //create canvas
         canvas = new Canvas(size * blockSize, size * blockSize);
         canvas.setId("Canvas");
 
         gc = canvas.getGraphicsContext2D();
+
 
         canvas.setOnMouseClicked(new EventHandler<MouseEvent>() {
             @Override
@@ -74,6 +86,7 @@ public class View {
                 selectedPoint.clear();
                 redraw();
                 wordDisplay.setText("");
+                ScoreLabel.setText("Point: " + model.getPoints());
             }
         });
         canvas.setOnMouseMoved(new EventHandler<MouseEvent>() {
@@ -103,6 +116,12 @@ public class View {
             public void handle(MouseEvent k) {
                 int loc_x = (int)(k.getX() / blockSize);
                 int loc_y = (int)(k.getY() / blockSize);
+                try{
+                    model.grid.getStrAt(loc_x, loc_y);
+                } catch (Exception e){
+                    return;
+                }
+
                 if(Current.x != loc_x || Current.y != loc_y){
                     System.out.println(model.grid.getStrAt(loc_x, loc_y));
                     Converter.playSound(model.grid.getStrAt(loc_x, loc_y));
@@ -171,8 +190,53 @@ public class View {
         wordDisplay.setEditable(false);
 
         WordList =new ListView<>();
-        WordList.getItems().add("Test");
+        wordDefinition = new Popup();
+        wordDefinitionLabel = new Label("asd\nasd\nasd");
+        wordDefinitionTitle = new Label("asdsadas");
+        wordDefinitionTitle.setFont(new Font(20));
+        wordDefinitionTitle.setTextFill(Color.WHITE);
+        wordDefinitionTitle.setStyle("-fx-background-color: Black;");
 
+        wordDefinitionLabel.setTextFill(Color.WHITE);
+        wordDefinitionLabel.setStyle("-fx-background-color: Black;");
+        VBox temp = new VBox(wordDefinitionTitle, wordDefinitionLabel);
+        temp.setBackground(new Background(new BackgroundFill(Color.BLACK, CornerRadii.EMPTY, Insets.EMPTY)));
+        wordDefinition.getContent().add(temp);
+        wordDefinition.setAnchorX(100);
+        wordDefinition.setAnchorY(100);
+        WordList.setCellFactory(lv -> {
+            ListCell<String> cell = new ListCell<String>() {
+                @Override
+                public void updateItem(String item, boolean empty) {
+                    super.updateItem(item, empty);
+                    if (empty) {
+                        setText(null);
+                    } else {
+                        setText(item);
+                    }
+                }
+            };
+            cell.hoverProperty().addListener((obs, wasHovered, isNowHovered) -> {
+                if (isNowHovered && ! cell.isEmpty()) {
+                    wordDefinition.show(stage);
+                    CurrentWord = cell.getText();
+                    UpdatePopup();
+                } else {
+                    wordDefinition.hide();
+                }
+            });
+            cell.setOnMouseMoved(new EventHandler<MouseEvent>() {
+                @Override
+                public void handle(MouseEvent mouseEvent) {
+                    wordDefinition.setAnchorX(mouseEvent.getScreenX() - wordDefinition.getWidth() - 3);
+                    wordDefinition.setAnchorY(mouseEvent.getSceneY() + (wordDefinition.getHeight() / 3));
+                }
+            });
+            return cell;
+        });
+
+        WordList.getItems().add("abashed");
+        WordList.getItems().add("zombie");
         BorderPane mainPane = new BorderPane();
         mainPane.setCenter(canvas);
         mainPane.setTop(MainDisplay);
@@ -198,6 +262,27 @@ public class View {
 
         redraw();
         
+    }
+    private void UpdatePopup(){
+        if(CurrentWord.equals(ActiveWord)){
+            return;
+        }
+        ActiveWord = CurrentWord;
+        wordDefinitionTitle.setText(CurrentWord.toUpperCase());
+        StringBuilder out = new StringBuilder();
+        HashMap<String, List<String>> definition = DefinitionProcess.get_defintion(CurrentWord);
+        if (definition == null){
+            out = new StringBuilder("Definition not found");
+        }
+        else{
+            for(String type: definition.keySet()){
+                out.append("\n" + type);
+                for(String def: definition.get(type)){
+                    out.append("\n     ").append(def);
+                }
+            }
+        }
+        wordDefinitionLabel.setText(out.substring(1).toString());
     }
 
     private void UpdateWordDIsplay(){
@@ -277,22 +362,32 @@ public class View {
     }
 
     private void redraw(){
-        int shift = 5;
-        gc.setStroke(Color.BLACK);
+        int shift = 10;
+        gc.setStroke(Color.WHITE);
         gc.setFill(Color.BLACK);
         gc.fillRect(0, 0, size * blockSize, size * blockSize);
         gc.setTextAlign(TextAlignment.CENTER);
-        gc.setFill(Color.RED);
 
         for(int i = 0; i < size; i++){
             for(int j = 0; j < size; j++) {
-                if(selectedPointContain(i, j) != -1){
-                    gc.setFill(Color.GREEN);
-                }
-                else {gc.setFill(Color.RED);}
+                gc.setFill(Color.rgb(192, 223, 161));
                 gc.fillRect((blockSize * i) + shift, (blockSize * j) + shift, blockSize - (2 * shift), blockSize - (2 * shift));
-                gc.strokeText(model.grid.getStrAt(i, j), blockSize * i + (blockSize / 2), blockSize * j + (blockSize / 2));
 
+
+                if(selectedPointContain(i, j) != -1){
+                    gc.setFill(Color.YELLOW);
+                    gc.fillRect((blockSize * i) + shift + 5, (blockSize * j) + shift + 5, blockSize - (2 * shift) - 10, blockSize - (2 * shift) - 10);
+                    gc.setStroke(Color.BLACK);
+                    gc.strokeText(model.grid.getStrAt(i, j), blockSize * i + (blockSize / 2), blockSize * j + (blockSize / 2));
+
+                }
+                else {
+                    gc.setFill(Color.BLACK);
+                    gc.fillRect((blockSize * i) + shift + 5, (blockSize * j) + shift + 5, blockSize - (2 * shift) - 10, blockSize - (2 * shift) - 10);
+                    gc.setStroke(Color.WHITE);
+                    gc.strokeText(model.grid.getStrAt(i, j), blockSize * i + (blockSize / 2), blockSize * j + (blockSize / 2));
+
+                }
             }
         }
     }

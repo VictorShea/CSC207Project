@@ -13,12 +13,17 @@ public class DefinitionProcess {
 
     static RandomAccessFile raf;
     static LinkedHashMap<String, HashMap<String, List<String>>> cachedDefinition;
-    public static HashMap<String, List<String>> get_defintion(String word) throws IOException {
+    public static HashMap<String, List<String>> get_defintion(String word) {
         if(cachedDefinition.containsKey(word)){
             return cachedDefinition.get(word);
         }
-        raf.seek(defLoc.get(word));
-        String wordDef = raf.readLine();
+        String wordDef;
+        try{
+            raf.seek(defLoc.get(word));
+            wordDef = raf.readLine();
+        } catch (IOException e) {
+            return null;
+        }
         HashMap<String, List<String>> out = new HashMap<String, List<String>>();
         for (String def: wordDef.split("/a/")) {
             if (Objects.equals(def, word)){
@@ -43,9 +48,5 @@ public class DefinitionProcess {
         raf = new RandomAccessFile("Definition.txt", "r");
 
         BufferedReader r = new BufferedReader( new FileReader("wordlist.txt"));
-
-        System.out.println(get_defintion("aggressive"));
-        System.out.println(get_defintion("alcoholic"));
-
     }
 }
