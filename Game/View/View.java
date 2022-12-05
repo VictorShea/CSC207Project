@@ -2,15 +2,19 @@ package Game.View;
 import Game.GameMenu;
 
 import javafx.animation.KeyFrame;
+import javafx.animation.PauseTransition;
 import javafx.animation.Timeline;
 import javafx.event.EventHandler;
 import javafx.geometry.Insets;
 import javafx.scene.Scene;
 import javafx.scene.canvas.Canvas;
 import javafx.scene.canvas.GraphicsContext;
+import javafx.scene.control.Button;
 import javafx.scene.control.ListView;
 import javafx.scene.input.MouseEvent;
+import javafx.scene.layout.Background;
 import javafx.scene.layout.BorderPane;
+import javafx.scene.layout.HBox;
 import javafx.scene.layout.VBox;
 import javafx.scene.paint.Color;
 import javafx.scene.text.Font;
@@ -23,6 +27,7 @@ import java.util.List;
 
 import Game.Model.GameController;
 import javafx.util.Duration;
+import jdk.jshell.spi.ExecutionControl;
 
 public class View {
     Timeline timeLine;
@@ -44,6 +49,7 @@ public class View {
     TupleInt Current;
     GameMenu menu;
     Boolean gameClosed;
+    Button savefile;
     public View(Stage stage, GameController model, GameMenu menu) {
         gameClosed = false;
         this.menu = menu;
@@ -173,13 +179,28 @@ public class View {
         WordList =new ListView<>();
         WordList.getItems().add("Test");
 
+        savefile = new Button("Save");
+        savefile.setOnAction(e -> savefile());
+        savefile.setPrefSize(60, 40);
+
+        Button closegame = new Button("Close");
+        closegame.setOnAction(e -> EndGame());
+        closegame.setPrefSize(60, 40);
+        WordList.setMinHeight(500);
+        closegame.setStyle("-fx-background-color: white;");
+        savefile.setStyle("-fx-background-color: white;");
+        HBox hbox = new HBox(savefile, closegame);
+        hbox.setMinWidth(0);
+        hbox.setSpacing(20);
+        VBox vbox1 = new VBox(hbox, WordList);
+        vbox1.setSpacing(5);
         BorderPane mainPane = new BorderPane();
         mainPane.setCenter(canvas);
         mainPane.setTop(MainDisplay);
         mainPane.setPadding(new Insets(10, 20, 10, 20));
 
         borderPane.setCenter(mainPane);
-        borderPane.setRight(WordList);
+        borderPane.setRight(vbox1);
 
 
         Scene scene = new Scene(borderPane, size * blockSize + 200, size * blockSize + 150);
@@ -198,6 +219,30 @@ public class View {
 
         redraw();
         
+    }
+
+    private void savefile() {
+        boolean result = false;
+        if (result){
+            savefile.setStyle("-fx-background-color: green;");
+            PauseTransition pause = new PauseTransition(
+                    Duration.seconds(1)
+                    );
+            pause.setOnFinished(event -> {
+                savefile.setStyle("-fx-background-color: white;");
+            });
+            pause.play();
+        }
+        else{
+            savefile.setStyle("-fx-background-color: red;");
+            PauseTransition pause = new PauseTransition(
+                    Duration.seconds(1)
+            );
+            pause.setOnFinished(event -> {
+                savefile.setStyle("-fx-background-color: white;");
+            });
+            pause.play();
+        }
     }
 
     private void UpdateWordDIsplay(){
