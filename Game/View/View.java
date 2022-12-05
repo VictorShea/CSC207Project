@@ -1,16 +1,20 @@
 package Game.View;
 
 import Game.GameMenu;
-
+import Game.Model.GameController;
 import javafx.animation.KeyFrame;
+import javafx.animation.PauseTransition;
 import javafx.animation.Timeline;
 import javafx.event.EventHandler;
 import javafx.geometry.Insets;
 import javafx.scene.Scene;
 import javafx.scene.canvas.Canvas;
 import javafx.scene.canvas.GraphicsContext;
+import javafx.scene.control.Label;
 import javafx.scene.control.ListCell;
 import javafx.scene.control.ListView;
+import javafx.scene.control.TextField;
+import javafx.scene.effect.ColorAdjust;
 import javafx.scene.input.MouseEvent;
 import javafx.scene.layout.*;
 import javafx.scene.paint.Color;
@@ -18,17 +22,11 @@ import javafx.scene.text.Font;
 import javafx.scene.text.TextAlignment;
 import javafx.stage.Popup;
 import javafx.stage.Stage;
-import javafx.scene.control.TextField;
-import javafx.scene.control.Label;
+import javafx.util.Duration;
 
-import java.io.IOException;
 import java.util.HashMap;
 import java.util.LinkedList;
 import java.util.List;
-import java.util.Objects;
-import Game.View.DefinitionProcess;
-import Game.Model.GameController;
-import javafx.util.Duration;
 
 public class View {
     Timeline timeLine;
@@ -81,10 +79,28 @@ public class View {
         canvas.setOnMouseClicked(new EventHandler<MouseEvent>() {
             @Override
             public void handle(MouseEvent k) {
-                model.inputWord(getSelectedPointWord());
+
+                if(model.inputWord(getSelectedPointWord())){
+                    redraw(Color.GREEN);
+                    PauseTransition pause = new PauseTransition(
+                            Duration.seconds(0.4)
+                    );
+                    pause.setOnFinished(event -> {
+                        redraw();
+                    });
+                    pause.play();
+                } else{
+                    redraw(Color.RED);
+                    PauseTransition pause = new PauseTransition(
+                            Duration.seconds(0.4)
+                    );
+                    pause.setOnFinished(event -> {
+                        redraw();
+                    });
+                    pause.play();
+                }
                 UpdateWordDIsplay();
                 selectedPoint.clear();
-                redraw();
                 wordDisplay.setText("");
                 ScoreLabel.setText("Point: " + model.getPoints());
             }
@@ -201,9 +217,11 @@ public class View {
         wordDefinitionLabel.setStyle("-fx-background-color: Black;");
         VBox temp = new VBox(wordDefinitionTitle, wordDefinitionLabel);
         temp.setBackground(new Background(new BackgroundFill(Color.BLACK, CornerRadii.EMPTY, Insets.EMPTY)));
+        temp.setStyle("-fx-border-color: cyan");
         wordDefinition.getContent().add(temp);
         wordDefinition.setAnchorX(100);
         wordDefinition.setAnchorY(100);
+
         WordList.setCellFactory(lv -> {
             ListCell<String> cell = new ListCell<String>() {
                 @Override
@@ -244,10 +262,7 @@ public class View {
 
         borderPane.setCenter(mainPane);
         borderPane.setRight(WordList);
-
-
         Scene scene = new Scene(borderPane, size * blockSize + 200, size * blockSize + 150);
-
         this.stage.setScene(scene);
         this.stage.show();
 
@@ -276,13 +291,13 @@ public class View {
         }
         else{
             for(String type: definition.keySet()){
-                out.append("\n" + type);
+                out.append("\n").append(type);
                 for(String def: definition.get(type)){
                     out.append("\n     ").append(def);
                 }
             }
         }
-        wordDefinitionLabel.setText(out.substring(1).toString());
+        wordDefinitionLabel.setText(out.substring(1));
     }
 
     private void UpdateWordDIsplay(){
@@ -362,6 +377,10 @@ public class View {
     }
 
     private void redraw(){
+        redraw(Color.YELLOW);
+    }
+
+    private void redraw(Color colorSelected){
         int shift = 10;
         gc.setStroke(Color.WHITE);
         gc.setFill(Color.BLACK);
@@ -375,7 +394,7 @@ public class View {
 
 
                 if(selectedPointContain(i, j) != -1){
-                    gc.setFill(Color.YELLOW);
+                    gc.setFill(colorSelected);
                     gc.fillRect((blockSize * i) + shift + 5, (blockSize * j) + shift + 5, blockSize - (2 * shift) - 10, blockSize - (2 * shift) - 10);
                     gc.setStroke(Color.BLACK);
                     gc.strokeText(model.grid.getStrAt(i, j), blockSize * i + (blockSize / 2), blockSize * j + (blockSize / 2));
@@ -391,5 +410,4 @@ public class View {
             }
         }
     }
-
 }

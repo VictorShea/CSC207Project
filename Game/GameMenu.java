@@ -1,6 +1,5 @@
 package Game;
 
-import Game.StartGame;
 import Game.View.DefinitionProcess;
 import javafx.animation.FadeTransition;
 import javafx.application.Application;
