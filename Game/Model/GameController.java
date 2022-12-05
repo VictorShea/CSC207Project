@@ -1,8 +1,9 @@
 package Game.Model;
 
+import java.io.Serializable;
 import java.util.*;
 
-public class GameController {
+public class GameController implements Serializable {
     public int size;
     public int timer;
     public int rounds;
@@ -13,6 +14,7 @@ public class GameController {
     public BoggleGrid grid;
     private Dictionary dict;
     private HashMap<String, ArrayList<Position>> allWords;
+    private int id;
 
 
     public GameController(int size, int timer, boolean gameMode, int rounds){
@@ -26,6 +28,7 @@ public class GameController {
         this.stats = new NewStats();
         this.dict = new Dictionary("wordlist.txt");
         this.allWords = new HashMap<String, ArrayList<Position>>();
+        this.id = new Random().nextInt(999999) + 100000;
     }
 
     /**
@@ -310,4 +313,10 @@ public class GameController {
         }
 
     }
+
+    public int getID(){
+        return this.id;
+    }
+
+
 }

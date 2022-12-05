@@ -24,6 +24,7 @@ import javafx.scene.control.TextField;
 import javafx.scene.control.Label;
 import java.util.LinkedList;
 import java.util.List;
+import Game.Save.Save;
 
 import Game.Model.GameController;
 import javafx.util.Duration;
@@ -222,7 +223,7 @@ public class View {
     }
 
     private void savefile() {
-        boolean result = false;
+        boolean result = Save.saveGameController(model);
         if (result){
             savefile.setStyle("-fx-background-color: green;");
             PauseTransition pause = new PauseTransition(
