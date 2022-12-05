@@ -8,11 +8,14 @@ import javafx.geometry.Insets;
 import javafx.geometry.Pos;
 import javafx.scene.Scene;
 import javafx.scene.control.*;
+import javafx.scene.control.ListView;
 import javafx.scene.layout.GridPane;
 import javafx.scene.layout.HBox;
 import javafx.scene.layout.VBox;
 import javafx.scene.text.Font;
 import javafx.util.Duration;
+
+import java.util.ArrayList;
 
 /** Represents a Menu GUI for Boggle.
  * Includes 3 submenus Menu, Settings, and Load Menu
@@ -20,21 +23,25 @@ import javafx.util.Duration;
 
 public class GameMenu extends Application{
     Stage stage;
-    Button startButton, loadButton, settingsButton; //buttons for functions
-    Button PlayerButton, SizeButton,  settingsButton2; //buttons for functions
+    Button startButton, loadButton, settingsButton, leaderboardButton; //buttons for functions
+    Button PlayerButton, SizeButton, VoiceButton, ContrastButton, settingsButton2; //buttons for functions
     Button loadButton2, settingsButton3; //buttons for functions
+
+    Button settingsButton4; //buttons for functions
 
     Slider timeSlider = new Slider(10, 120, 60);
     Slider roundsSlider = new Slider(1, 10, 5);
-
     Label ModeLabel = new Label("BOGGLE!");
     Label ModeLabel2 = new Label("Settings");
     Label ModeLabel3 = new Label("Load Menu");
+    Label ModeLabel4 = new Label("Leaderboard");
 
     Label timeCaption = new Label("Time Per Round:");
     Label roundsCaption = new Label("Number of Rounds:");
     Label sizeCaption = new Label("Size of Grid:");
     Label playerCaption = new Label("Opponent:");
+    Label voiceCaption = new Label("Voice Accessibility:");
+    Label contrastCaption = new Label("Contrast Accessibility:");
 
     Label timeValueLabel = new Label("60 Seconds");
     Label roundsValueLabel = new Label("5 Rounds");
@@ -44,8 +51,15 @@ public class GameMenu extends Application{
 
     private int size = 4;
     private boolean human = true;
+
+    private boolean colorContrast = false;
+
+    private boolean voice = false;
     private int timeValue = 60;
     private int roundsValue = 5;
+
+    private ArrayList listViewItems = new ArrayList<>();
+
 
     /**
      * Main method
@@ -116,6 +130,11 @@ public class GameMenu extends Application{
         settingsButton.setFont(new Font(12));
         settingsButton.setStyle("-fx-background-color: #17871b; -fx-text-fill: white;");
 
+        leaderboardButton = new Button("Leaderboard");
+        leaderboardButton.setPrefSize(400, 50);
+        leaderboardButton.setFont(new Font(12));
+        leaderboardButton.setStyle("-fx-background-color: #17871b; -fx-text-fill: white;");
+
         //Configure settings menu labels, buttons, sliders, and a sub-GridPane
         //Sets the menu labels, buttons and sliders on the sub-GridPane
         //Labels: Settings, timeCaption, roundsCaption, playerCaption, timeValueLabel
@@ -131,10 +150,32 @@ public class GameMenu extends Application{
         PlayerButton.setFont(new Font(12));
         PlayerButton.setStyle("-fx-background-color: #17871b; -fx-text-fill: white;");
 
+        GridPane.setMargin(PlayerButton, new Insets(10, 10, 10, 120));
+        GridPane.setConstraints(PlayerButton, 1, 4);
+
         SizeButton = new Button("4x4");
         SizeButton.setPrefSize(200, 50);
         SizeButton.setFont(new Font(12));
         SizeButton.setStyle("-fx-background-color: #17871b; -fx-text-fill: white;");
+
+        GridPane.setConstraints(SizeButton, 1, 3);
+        GridPane.setMargin(SizeButton, new Insets(10, 10, 10, 120));
+
+        VoiceButton = new Button("On");
+        VoiceButton .setPrefSize(200, 50);
+        VoiceButton .setFont(new Font(12));
+        VoiceButton .setStyle("-fx-background-color: #17871b; -fx-text-fill: white;");
+
+        GridPane.setMargin(VoiceButton, new Insets(10, 10, 10, 120));
+        GridPane.setConstraints(VoiceButton, 1, 5);
+
+        ContrastButton = new Button("On");
+        ContrastButton .setPrefSize(200, 50);
+        ContrastButton .setFont(new Font(12));
+        ContrastButton .setStyle("-fx-background-color: #17871b; -fx-text-fill: white;");
+
+        GridPane.setMargin(ContrastButton, new Insets(10, 10, 10, 120));
+        GridPane.setConstraints(ContrastButton, 1, 6);
 
         settingsButton2 = new Button("Exit Settings");
         settingsButton2.setPrefSize(400, 50);
@@ -157,6 +198,12 @@ public class GameMenu extends Application{
         playerCaption.setStyle("-fx-text-fill: white;");
         GridPane.setConstraints(playerCaption, 0, 4);
 
+        contrastCaption.setStyle("-fx-text-fill: white;");
+        GridPane.setConstraints(contrastCaption, 0, 6);
+
+        voiceCaption.setStyle("-fx-text-fill: white;");
+        GridPane.setConstraints(voiceCaption, 0, 5);
+
         timeValueLabel.setStyle("-fx-text-fill: white;");
         GridPane.setConstraints(timeValueLabel, 2, 1);
 
@@ -169,13 +216,7 @@ public class GameMenu extends Application{
         GridPane.setConstraints(roundsSlider, 1, 2);
         GridPane.setMargin(roundsSlider, new Insets(10, 10, 10, 10));
 
-        GridPane.setConstraints(SizeButton, 1, 3);
-        GridPane.setMargin(SizeButton, new Insets(10, 10, 10, 120));
-
-        GridPane.setMargin(PlayerButton, new Insets(10, 10, 10, 120));
-        GridPane.setConstraints(PlayerButton, 1, 4);
-
-        subGridPane.getChildren().addAll(timeCaption, roundsCaption, sizeCaption, playerCaption, timeValueLabel, roundsValueLabel, timeSlider, roundsSlider, SizeButton, PlayerButton);
+        subGridPane.getChildren().addAll(timeCaption, roundsCaption, sizeCaption, playerCaption, timeValueLabel, roundsValueLabel, timeSlider, roundsSlider, SizeButton, PlayerButton, voiceCaption, contrastCaption, VoiceButton, ContrastButton);
 
         //Configure load menu buttons
         //Labels: Load Menu
@@ -194,6 +235,19 @@ public class GameMenu extends Application{
         settingsButton3.setPrefSize(400, 50);
         settingsButton3.setFont(new Font(12));
         settingsButton3.setStyle("-fx-background-color: #17871b; -fx-text-fill: white;");
+
+        //Configure leaderboard menu buttons
+        //Labels: Leaderboard Menu
+        //Buttons: Exit Leaderboard
+
+        ModeLabel4.setMinWidth(250);
+        ModeLabel4.setFont(new Font(100));
+        ModeLabel4.setStyle("-fx-text-fill: #e8e6e3");
+
+        settingsButton4 = new Button("Exit Leaderboard");
+        settingsButton4.setPrefSize(400, 50);
+        settingsButton4.setFont(new Font(12));
+        settingsButton4.setStyle("-fx-background-color: #17871b; -fx-text-fill: white;");
 
     }
 
@@ -216,7 +270,7 @@ public class GameMenu extends Application{
 
         //Adds the startButton, loadButton, and settingsButton to a VBox vBox and then sets it in the gridPane.
 
-        VBox vBox = new VBox(20, startButton, loadButton, settingsButton);
+        VBox vBox = new VBox(20, startButton, loadButton, leaderboardButton, settingsButton);
         vBox.setPadding(new Insets(20, 20, 20, 20));
         vBox.setAlignment(Pos.CENTER);
         GridPane.setConstraints(vBox, 1, 3);
@@ -232,6 +286,11 @@ public class GameMenu extends Application{
         loadButton.setOnAction(e -> {
             LoadMenu();
             gridPane.requestFocus();
+        });
+
+        leaderboardButton.setOnAction(e -> {
+           LeaderBoardMenu();
+           gridPane.requestFocus();
         });
 
         settingsButton.setOnAction(e -> {
@@ -287,7 +346,7 @@ public class GameMenu extends Application{
         //Adds settingsButton2 to a VBox vBox and then sets it in the gridPane.
 
         VBox vBox = new VBox(20, settingsButton2);
-        vBox.setPadding(new Insets(70, 20, 20, 20));
+        vBox.setPadding(new Insets(30, 20, 20, 20));
         vBox.setAlignment(Pos.CENTER);
         GridPane.setConstraints(vBox, 1, 2);
 
@@ -339,6 +398,32 @@ public class GameMenu extends Application{
             stage.show();
         });
 
+        VoiceButton.setOnAction(e -> {
+            if(VoiceButton.getText().equals("On")){
+                voice = false;
+                VoiceButton.setText("Off");
+            }
+            else if(SizeButton.getText().equals("Off")){
+                voice = true;
+                SizeButton.setText("On");
+            }
+            gridPane.requestFocus();
+            stage.show();
+        });
+
+        ContrastButton.setOnAction(e -> {
+            if(ContrastButton.getText().equals("On")){
+                colorContrast = false;
+                ContrastButton.setText("Off");
+            }
+            else if(SizeButton.getText().equals("Off")){
+                colorContrast = true;
+                SizeButton.setText("On");
+            }
+            gridPane.requestFocus();
+            stage.show();
+        });
+
         //sets the fade transitions for the menu components as it loads in.
 
         FadeTransition fade = new FadeTransition();
@@ -365,7 +450,7 @@ public class GameMenu extends Application{
         //Adds the subGridTitleBox and vBox to the gridPane and then shows it on the stage.
 
         gridPane.getChildren().addAll(subGridPane, TitleBox, vBox);
-        this.stage.show();
+        stage.show();
     }
 
     /**
@@ -426,4 +511,63 @@ public class GameMenu extends Application{
         gridPane.getChildren().addAll(TitleBox, vBox);
         stage.show();
     }
+
+    private void LeaderBoardMenu() {
+
+        stage.setTitle("Leaderboard Menu");
+        gridPane.getChildren().clear();
+
+        ListView listView = new ListView();
+        listView.setFixedCellSize(20);
+        listView.setMaxWidth(1000);
+        listView.setStyle("-fx-text-fill: #e8e6e3");
+
+        HBox TitleBox = new HBox(20, ModeLabel4);
+        TitleBox.setPadding(new Insets(200, 20, 20, 20));
+        TitleBox.setAlignment(Pos.CENTER);
+        GridPane.setConstraints(TitleBox, 1, 0);
+
+        System.out.println(listView);
+
+        HBox TitleBox2 = new HBox(100, listView);
+        TitleBox2.setPadding(new Insets(20, 20, 20, 20));
+        listView.setPrefWidth(600);
+        TitleBox2.setAlignment(Pos.CENTER);
+        GridPane.setConstraints(TitleBox2, 1, 1);
+
+        VBox vBox = new VBox(20, settingsButton4);
+        vBox.setPadding(new Insets(20, 20, 20, 20));
+        vBox.setAlignment(Pos.CENTER);
+        GridPane.setConstraints(vBox, 1, 2);
+
+        settingsButton4.setOnAction(e -> {
+            Menu();
+            gridPane.requestFocus();
+        });
+
+        FadeTransition fade = new FadeTransition();
+        fade.setDuration(Duration.millis(1000));
+        fade.setFromValue(0);
+        fade.setToValue(10);
+        fade.setNode(vBox);
+        fade.play();
+
+        FadeTransition fade2 = new FadeTransition();
+        fade2.setDuration(Duration.millis(1000));
+        fade2.setFromValue(0);
+        fade2.setToValue(10);
+        fade2.setNode(TitleBox);
+        fade2.play();
+
+        FadeTransition fade3 = new FadeTransition();
+        fade3.setDuration(Duration.millis(1000));
+        fade3.setFromValue(0);
+        fade3.setToValue(10);
+        fade3.setNode(TitleBox2);
+        fade3.play();
+
+        gridPane.getChildren().addAll(TitleBox, TitleBox2, vBox);
+        stage.show();
+    }
+
 }
