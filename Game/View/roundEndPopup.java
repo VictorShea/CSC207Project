@@ -18,6 +18,10 @@ public class roundEndPopup {
     View view;
     final Stage dialog = new Stage();
 
+    /**
+     * Initialize variable for round end display
+     * @param view the root view class
+     */
     public roundEndPopup(View view)
     {
         String p1_name = view.model.getPlayerName(0);
@@ -87,6 +91,9 @@ public class roundEndPopup {
         dialog.setOnCloseRequest(e -> close());
     }
 
+    /**
+     * close the popup while starting new game
+     */
     public void close(){
         dialog.close();
         view.startRound();
