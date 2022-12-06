@@ -165,7 +165,7 @@ public class GameController implements Serializable {
         // Initialize a board
         initializeBoard(this.size);
         //Get all legal words
-        findAllWords(this.allWords, this.dict, grid);
+        findAllWords(this.allWords, this.dict, this.grid);
     }
 
 
@@ -213,6 +213,9 @@ public class GameController implements Serializable {
     public boolean inputWord(String word){
         // create a verify function
         if (!allWords.containsKey(word.toUpperCase())){
+            return false;
+        }
+        if (this.stats.getPlayerWords().contains(word) || this.stats.getOpponentWords().contains(word)){
             return false;
         }
         if(this.currentState == State.You){

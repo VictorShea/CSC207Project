@@ -6,9 +6,12 @@ import javafx.stage.Stage;
 
 
 public class StartGame {
-    View view;
-    public StartGame(Stage stage, int size, int timer, boolean gameMode, int rounds, GameMenu menu){
+    public static void StartGame(Stage stage, int size, int timer, boolean gameMode, int rounds, GameMenu menu){
         GameController model = new GameController(size, timer, gameMode, rounds);
-        view = new View(stage, model, menu);
+        new View(stage, model, menu);
+    }
+    public static void loadGame(Stage stage, GameMenu menu, String filepath){
+        GameController model = Game.Save.Load.loadSave(filepath);
+        new View(stage, model, menu);
     }
 }

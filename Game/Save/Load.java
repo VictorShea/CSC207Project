@@ -10,23 +10,25 @@ public class Load {
 
     static String[] getSaves() {
         //Access the list of saves.
-        File saveFolder = new File("./boards/");
+        File saveFolder = new File("Game/Save/SaveFiles/");
         return saveFolder.list();
     }
 
-    static GameController loadSave(String filename) throws IOException {
+    public static GameController loadSave(String filename) {
         // Get the GameController from the file.
         FileInputStream file = null;
         ObjectInputStream in = null;
         try {
             file = new FileInputStream(filename);
             in = new ObjectInputStream(file);
-            return (GameController) in.readObject();
+            return (GameController)
+                    in.readObject();
         } catch (IOException|ClassNotFoundException e) {
             throw new RuntimeException(e);
         } finally {
-            in.close();
-            file.close();
+            try{in.close();
+            file.close();}
+            catch(IOException e){throw new RuntimeException(e);}
         }
     }
 }

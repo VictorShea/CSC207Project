@@ -5,7 +5,7 @@ import java.io.FileOutputStream;
 import java.io.IOException;
 import java.io.ObjectOutputStream;
 import Game.Model.GameController;
-import java.time.LocalDate;
+import java.time.Clock;
 
 public class Save {
 
@@ -23,7 +23,7 @@ public class Save {
         }
 
         try {
-            String fileName = "Game/Save/SaveFiles" + controller.getID() + "-" + LocalDate.now();
+            String fileName = "Game/Save/SaveFiles/" + controller.getID() + "-" + java.time.Clock.systemUTC().instant();
             File saveFile = new File(fileName);
             FileOutputStream output = new FileOutputStream(saveFile);
             ObjectOutputStream out = new ObjectOutputStream(output);

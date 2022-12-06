@@ -225,7 +225,7 @@ public class GameMenu extends Application{
         //sends them to the appropriate sub menu.
 
         startButton.setOnAction(e -> {
-            new StartGame(stage, size, timeValue, human, roundsValue, this);
+            StartGame.StartGame(stage, size, timeValue, human, roundsValue, this);
             gridPane.requestFocus();
         });
 
