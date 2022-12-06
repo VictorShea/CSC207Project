@@ -23,7 +23,7 @@ public class Save {
         }
 
         try {
-            String fileName = "Game/Save/SaveFiles/" + controller.getID() + "_" + java.time.Clock.systemUTC().instant() + ".ser";
+            String fileName = "Game/Save/SaveFiles/" + controller.getPlayerName(0) + controller.getID() + "_" + java.time.Clock.systemUTC().instant() + ".ser";
             fileName = fileName.replace(":", ",");
             File saveFile = new File(fileName);
             FileOutputStream output = new FileOutputStream(saveFile);
