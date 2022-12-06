@@ -362,13 +362,12 @@ public class View {
     private void EndGameActual(){
         gameClosed = true;
         timeLine.stop();
-        int[] score;
-        if (model.gamemode == GameController.Gamemode.Computer){
-            score = new int[]{model.getPoints(0)};
+        HashMap<String, Integer> score = new HashMap<String, Integer>();
+        score.put(model.getPlayerName(0), model.getPoints(0));
+        if (model.gamemode != GameController.Gamemode.Computer){
+            score.put(model.getPlayerName(1), model.getPoints(1));
         }
-        else{
-            score = new int[]{model.getPoints(0), model.getPoints(1)};
-        }
+
         menu.openMenu(score);
     }
     private void EndGame(){

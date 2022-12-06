@@ -33,8 +33,8 @@ public class GameMenu extends Application{
     Slider timeSlider = new Slider(10, 120, 60);
     Slider roundsSlider = new Slider(1, 10, 5);
 
-    TextField nameDisplay = new TextField();
-    TextField nameDisplay2 = new TextField();
+    TextField nameDisplay = new TextField("Player 1");
+    TextField nameDisplay2 = new TextField("Player 2");
 
     Button PlayerButton = new Button("Human");
     Button SizeButton = new Button("4x4");
@@ -66,8 +66,8 @@ public class GameMenu extends Application{
     private boolean voice = false;
     private int timeValue = 60;
     private int roundsValue = 5;
-    private String name;
-    private String name2;
+    private String name = nameDisplay.getText();
+    private String name2 = nameDisplay2.getText();
     private ArrayList listViewItems = new ArrayList<>();
 
 
@@ -113,7 +113,11 @@ public class GameMenu extends Application{
     public void openMenu(){
         start(stage);
     }
-//    public void openMenu(HashMap<String, Integer> score){
+    public void openMenu(HashMap<String, Integer> score){
+        System.out.println(score);
+        start(stage);
+
+    }
 //        if(listViewItems.size() <= 10 & listViewItems.size() >= 0) {
 //            for(String a : score.keySet()) {
 //                listViewItems.add(score.get(a));
@@ -121,7 +125,6 @@ public class GameMenu extends Application{
 //                Collections.reverse(listViewItems);
 //            }
 //        }
-//        start(stage);
 //    }
 
 
@@ -451,9 +454,15 @@ public class GameMenu extends Application{
         });
 
         nameDisplay.setOnAction(e -> {
+            System.out.println("asd");
             name = nameDisplay.getText();
         });
-
+        nameDisplay.textProperty().addListener((observable, oldValue, newValue) -> {
+            name = nameDisplay.getText();
+        });
+        nameDisplay2.textProperty().addListener((observable, oldValue, newValue) -> {
+            name2 = nameDisplay2.getText();
+        });
         nameDisplay2.setOnAction(e -> {
             name2 = nameDisplay2.getText();
         });
