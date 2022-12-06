@@ -399,10 +399,16 @@ public class GameMenu extends Application{
         String[] path = Game.Save.Load.getSaves();
         LinkedList<String> ProcessedData = new LinkedList<String>();
         for(int i = 0; i < path.length; i++){
-            ProcessedData.add(path[i].split("_")[1].replace(",", ":"));
+            System.out.println(path[i]);
+            String[] word = path[i].split("_");
+            String name = word[0];
+            String time = word[2];
+            String date = time.split("T")[0];
+            time = time.split("T")[1].split("[.]")[0].replace(",", ":");
+            ProcessedData.add(name + " " + date + " " + time);
         }
         fileList.getItems().clear();
-        fileList.getItems().addAll(path);
+        fileList.getItems().addAll(ProcessedData);
         //Tracks User inputs in the settings menu, checks if the user clicks any sliders or any buttons and sends them
         //to the appropriate sub menu.
 
