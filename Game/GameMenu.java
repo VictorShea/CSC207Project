@@ -321,7 +321,7 @@ public class GameMenu extends Application{
         //sends them to the appropriate sub menu.
 
         startButton.setOnAction(e -> {
-            new StartGame(stage, size, timeValue, human, roundsValue, this, voice, name, name2);
+            new StartGame(stage, size, timeValue, human, roundsValue, this, voice, name, name2, colorContrast);
             System.out.println(voice);
             gridPane.requestFocus();
         });
