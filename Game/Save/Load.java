@@ -8,7 +8,7 @@ import java.util.List;
 
 public class Load {
 
-    static String[] getSaves() {
+    public static String[] getSaves() {
         //Access the list of saves.
         File saveFolder = new File("Game/Save/SaveFiles/");
         return saveFolder.list();
@@ -31,4 +31,6 @@ public class Load {
             catch(IOException e){throw new RuntimeException(e);}
         }
     }
+
+
 }

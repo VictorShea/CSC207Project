@@ -10,7 +10,7 @@ import java.time.Clock;
 public class Save {
 
     public static boolean saveGameController(GameController controller ) {
-        File saveFolder = new File("./boards/");
+        File saveFolder = new File("Game/Save/SaveFiles/");
         String[] saves = saveFolder.list();
 
         if(saves != null) {
@@ -23,7 +23,8 @@ public class Save {
         }
 
         try {
-            String fileName = "Game/Save/SaveFiles/" + controller.getID() + "-" + java.time.Clock.systemUTC().instant();
+            String fileName = "Game/Save/SaveFiles/" + controller.getID() + "_" + java.time.Clock.systemUTC().instant() + ".ser";
+            fileName = fileName.replace(":", ",");
             File saveFile = new File(fileName);
             FileOutputStream output = new FileOutputStream(saveFile);
             ObjectOutputStream out = new ObjectOutputStream(output);
