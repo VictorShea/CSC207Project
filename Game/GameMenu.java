@@ -1,6 +1,6 @@
 package Game;
 
-import Game.StartGame;
+import Game.View.DefinitionProcess;
 import javafx.animation.FadeTransition;
 import javafx.application.Application;
 import javafx.stage.Stage;
@@ -13,6 +13,8 @@ import javafx.scene.layout.HBox;
 import javafx.scene.layout.VBox;
 import javafx.scene.text.Font;
 import javafx.util.Duration;
+
+import java.io.IOException;
 
 /** Represents a Menu GUI for Boggle.
  * Includes 3 submenus Menu, Settings, and Load Menu
@@ -54,6 +56,13 @@ public class GameMenu extends Application{
      */
 
     public static void main(String[] args) {
+        try{
+            DefinitionProcess.initializeDictionary();
+        } catch (IOException e) {
+            throw new RuntimeException(e);
+        } catch (ClassNotFoundException e) {
+            throw new RuntimeException(e);
+        }
         Application.launch(args);
     }
 
