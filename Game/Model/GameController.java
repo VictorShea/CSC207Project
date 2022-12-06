@@ -8,7 +8,7 @@ public class GameController {
     public int rounds;
     public int curRounds;
     private State currentState;
-    private Gamemode gamemode;
+    public Gamemode gamemode;
     private NewStats stats;
     public BoggleGrid grid;
     private Dictionary dict;
