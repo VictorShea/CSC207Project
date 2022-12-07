@@ -11,7 +11,7 @@ public class SaveTests {
     @Test
     void saveAFileTest() {
         String[] first = Load.getSaves();
-        Game.Model.GameController game = new Game.Model.GameController(4, 120, true, 4);
+        Game.Model.GameController game = new Game.Model.GameController(4, 120, true, 4, "asd", "asd");
         game.playRound();
         game.playRound();
         Save.saveGameController(game);
@@ -24,7 +24,7 @@ public class SaveTests {
     //Test saving a file.
     @Test
     void loadAFileTest() {
-        Game.Model.GameController game = new Game.Model.GameController(4, 120, true, 4);
+        Game.Model.GameController game = new Game.Model.GameController(4, 120, true, 4, "asd", "asd");
         game.playRound();
         game.playRound();
         game.timer();

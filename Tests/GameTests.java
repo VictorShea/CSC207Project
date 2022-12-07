@@ -14,7 +14,7 @@ public class GameTests {
     //GameController Test
     @Test
     void findAllWordsSmallGrid() throws NoSuchMethodException, InvocationTargetException, IllegalAccessException {
-        Game.Model.GameController game = new Game.Model.GameController(4, 60, true, 4);
+        Game.Model.GameController game = new Game.Model.GameController(4, 60, true, 4, "asd", "asd");
         Method method = game.getClass().getDeclaredMethod("findAllWords", Map.class, Game.Model.Dictionary.class, Game.Model.BoggleGrid.class);
         method.setAccessible(true);
 
@@ -32,7 +32,7 @@ public class GameTests {
 
     @Test
     void findAllWordsBigGridSize() throws NoSuchMethodException, InvocationTargetException, IllegalAccessException {
-        Game.Model.GameController game = new Game.Model.GameController(5, 60, true, 4);
+        Game.Model.GameController game = new Game.Model.GameController(5, 60, true, 4, "asd", "asd");
         Method method = game.getClass().getDeclaredMethod("findAllWords", Map.class, Game.Model.Dictionary.class, Game.Model.BoggleGrid.class);
         method.setAccessible(true);
 
@@ -49,7 +49,7 @@ public class GameTests {
 
     @Test
     void findAllWordsSmallGridShuffled() throws NoSuchMethodException, InvocationTargetException, IllegalAccessException {
-        Game.Model.GameController game = new  Game.Model.GameController(4, 60, true, 4);
+        Game.Model.GameController game = new  Game.Model.GameController(4, 60, true, 4, "asd", "asd");
         Method method = game.getClass().getDeclaredMethod("findAllWords", Map.class, Game.Model.Dictionary.class, Game.Model.BoggleGrid.class);
         method.setAccessible(true);
 
@@ -104,7 +104,7 @@ public class GameTests {
     //playRound Test
     @Test
     void playRoundTest() {
-        Game.Model.GameController game = new Game.Model.GameController(4, 60, true, 4);
+        Game.Model.GameController game = new Game.Model.GameController(4, 60, true, 4, "asd", "asd");
         game.playRound();
         Game.Model.BoggleGrid gridOne = game.grid;
         game.playRound();
@@ -115,7 +115,7 @@ public class GameTests {
     //Testing timer resets properly
     @Test
     void timerTest() {
-        Game.Model.GameController game = new Game.Model.GameController(4, 60, true, 4);
+        Game.Model.GameController game = new Game.Model.GameController(4, 60, true, 4, "asd", "asd");
         game.playRound();
         int current = game.curRounds;
         assertEquals(1, current);
@@ -130,7 +130,7 @@ public class GameTests {
     //Checking that input word checks properly. 
     @Test
     void inputWordTest() {
-        Game.Model.GameController game = new Game.Model.GameController(4, 120, true, 4);
+        Game.Model.GameController game = new Game.Model.GameController(4, 120, true, 4, "asd", "asd");
         game.playRound();
         game.timer();
         boolean bool = game.inputWord("aardvarkee");

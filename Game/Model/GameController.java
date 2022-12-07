@@ -33,7 +33,7 @@ public class GameController implements Serializable {
     /**
      * stores the chosen gamemode
      */
-    private Gamemode gamemode;
+    public Gamemode gamemode;
     /**
      * stores points and played words
      */

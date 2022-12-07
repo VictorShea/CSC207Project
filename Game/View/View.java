@@ -10,10 +10,7 @@ import javafx.geometry.Insets;
 import javafx.scene.Scene;
 import javafx.scene.canvas.Canvas;
 import javafx.scene.canvas.GraphicsContext;
-import javafx.scene.control.Label;
-import javafx.scene.control.ListCell;
-import javafx.scene.control.ListView;
-import javafx.scene.control.TextField;
+import javafx.scene.control.*;
 import javafx.scene.effect.ColorAdjust;
 import javafx.scene.input.MouseEvent;
 import javafx.scene.layout.*;
@@ -54,6 +51,7 @@ public class View {
     String ActiveWord;
     Label wordDefinitionTitle;
     Boolean Voice;
+    Button savefile;
     Color prev_Black = Color.BLACK;
     Color prev_Green = Color.GREEN;
     Color prev_Red = Color.RED;
@@ -280,16 +278,35 @@ public class View {
 
         WordList.getItems().add("abashed");
         WordList.getItems().add("zombie");
+        savefile = new Button("Save");
+        savefile.setOnAction(e -> savefile());
+        savefile.setPrefSize(60, 40);
+
+        Button closegame = new Button("Close");
+        closegame.setOnAction(e -> EndGame());
+        closegame.setPrefSize(60, 40);
+        WordList.setMinHeight(500);
+        closegame.setStyle("-fx-background-color: white;");
+        savefile.setStyle("-fx-background-color: white;");
+        HBox hbox = new HBox(savefile, closegame);
+        hbox.setMinWidth(0);
+        hbox.setSpacing(20);
+        VBox vbox1 = new VBox(hbox, WordList);
+        vbox1.setSpacing(5);
         BorderPane mainPane = new BorderPane();
         mainPane.setCenter(canvas);
         mainPane.setTop(MainDisplay);
         mainPane.setPadding(new Insets(10, 20, 10, 20));
 
         borderPane.setCenter(mainPane);
-        borderPane.setRight(WordList);
+        borderPane.setRight(vbox1);
+
+
         Scene scene = new Scene(borderPane, size * blockSize + 200, size * blockSize + 150);
+
         this.stage.setScene(scene);
         this.stage.show();
+
 
 
 
@@ -315,6 +332,8 @@ public class View {
                 savefile.setStyle("-fx-background-color: white;");
             });
             pause.play();
+        }
+    }
     /**
      * Update popup, move to current mouse location and update content to follow current active word.
      */
