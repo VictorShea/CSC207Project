@@ -516,10 +516,12 @@ public class GameMenu extends Application{
             if(PlayerButton.getText().equals("Human")){
                 human = false;
                 PlayerButton.setText("Computer");
+                subGridPane.getChildren().removeAll(playerLabel2, nameDisplay2);
             }
             else if(PlayerButton.getText().equals("Computer")){
                 human = true;
                 PlayerButton.setText("Human");
+                subGridPane.getChildren().addAll(playerLabel2, nameDisplay2);
             }
             gridPane.requestFocus();
             stage.show();
