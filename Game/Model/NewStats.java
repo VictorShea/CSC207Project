@@ -5,8 +5,8 @@ import java.util.HashSet;
 import java.util.Set;
 
 /**
- * The BoggleStats class for the first Assignment in CSC207, Fall 2022
- * The BoggleStats will contain statsitics related to game play Boggle 
+ * The NewStats class.
+ * NewStats will contain statsitics related to game play Boggle
  */
 public class NewStats implements Serializable {
 
@@ -59,7 +59,7 @@ public class NewStats implements Serializable {
         }
     }
 
-    /* BoggleStats constructor
+    /* NewStats constructor
      * ----------------------
      * Sets round, totals and averages to 0.
      * Initializes word lists (which are sets) for the opponent and human players.
@@ -99,9 +99,7 @@ public class NewStats implements Serializable {
 
     /* 
      * End a given round.
-     * This will clear out the human and opponent word lists, so we can begin again.
-     * The function will also update each player's total scores, average scores, and
-     * reset the current scores for each player to zero.
+     * The function will also update each player's total scores, average scores.
      * Finally, increment the current round number by 1.
      */
     public void endRound() {
@@ -113,27 +111,17 @@ public class NewStats implements Serializable {
 
     }
 
-
+    /*
+     * Resets all data only when a new round begins,
+     * This will clear out the human and opponent word lists, so we can begin again.
+     * Reset the current scores for each player to zero.
+     */
     public void newRound() {
         this.opponentWords = new HashSet<String>();
         this.playerWords = new HashSet<String>();
         this.oScore = 0;
         this.pScore = 0;
     }
-
-    /* 
-     * Summarize one round of boggle.  Print out:
-     * The words each player found this round.
-     * Each number of words each player found this round.
-     * Each player's score this round.
-     */
-
-    /* 
-     * Summarize the entire boggle game.  Print out:
-     * The total number of rounds played.
-     * The total score for either player.
-     * The average number of words found by each player per round.
-     */
 
     /* 
      * @return Set<String> The player's word list

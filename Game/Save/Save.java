@@ -7,8 +7,19 @@ import java.io.ObjectOutputStream;
 import Game.Model.GameController;
 import java.time.Clock;
 
+/**
+ * The Save class.
+ * Save will save played games.
+ */
 public class Save {
 
+    /*
+     * Save a game
+     *
+     * @param GameController Game to Save.
+     *
+     * @return boolean Whether save was successful.
+     */
     public static boolean saveGameController(GameController controller ) {
         File saveFolder = new File("Game/Save/SaveFiles/");
         String[] saves = saveFolder.list();

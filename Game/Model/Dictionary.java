@@ -4,7 +4,7 @@ import java.io.*;
 import java.util.TreeSet;
 
 /**
- * The Dictionary class for the first Assignment in CSC207, Fall 2022
+ * The Dictionary class.
  * The Dictionary will contain lists of words that are acceptable for Boggle 
  */
 public class Dictionary implements Serializable {
