@@ -54,10 +54,10 @@ public class View {
     Button savefile;
     Color prev_Black = Color.BLACK;
     Color prev_Green = Color.GREEN;
-    Color prev_Red = Color.RED;
+    Color prev_Orange = Color.YELLOW;
     Color prev_White = Color.WHITE;
     Color prev_Yellow = Color.YELLOW;
-    Color prev_Cyan = Color.rgb(192, 223, 161);
+    Color prev_Cyan = Color.YELLOW;
     Color prev_Right = Color.GREEN;
     Color prev_Wrong = Color.RED;
     
@@ -187,7 +187,6 @@ public class View {
                     wordDisplay.setText(wordDisplay.getText() + model.grid.getStrAt(loc_x, loc_y));
                 }
                 else if (index != selectedPoint.size() - 1){
-                    System.out.println("ads");
                     selectedPoint = selectedPoint.subList(0, index);
                     redraw();
                     wordDisplay.setText(getSelectedPointWord());
@@ -200,12 +199,12 @@ public class View {
         ScoreLabel = new Label("Point: 0");
         ScoreLabel.setFont(new Font(30));
         ScoreLabel.setId("ScoreLabel");
-        ScoreLabel.setTextFill(prev_Red);
+        ScoreLabel.setTextFill(prev_Orange);
 
         timerLabel = new Label(Integer.toString(time));
         timerLabel.setFont(new Font(30));
         timerLabel.setId("TimerLabel");
-        timerLabel.setTextFill(prev_Red);
+        timerLabel.setTextFill(prev_Orange);
 
         display.setTop(wordDisplay);
         display.setLeft(ScoreLabel);
@@ -216,9 +215,9 @@ public class View {
         PlayerNameLabel = new Label();
         UpdateRoundLabel();
         roundLabel.setFont(new Font(30));
-        roundLabel.setTextFill(prev_Red);
+        roundLabel.setTextFill(prev_Orange);
         PlayerNameLabel.setFont(new Font(30));
-        PlayerNameLabel.setTextFill(prev_Red);
+        PlayerNameLabel.setTextFill(prev_Orange);
 
         SecondaryDisplay.setRight(roundLabel);
         SecondaryDisplay.setLeft(PlayerNameLabel);
@@ -229,8 +228,8 @@ public class View {
 
         WordList =new ListView<>();
         wordDefinition = new Popup();
-        wordDefinitionLabel = new Label("asd\nasd\nasd");
-        wordDefinitionTitle = new Label("asdsadas");
+        wordDefinitionLabel = new Label();
+        wordDefinitionTitle = new Label();
         wordDefinitionTitle.setFont(new Font(20));
         wordDefinitionTitle.setTextFill(prev_White);
         wordDefinitionTitle.setStyle("-fx-background-color: Black;");
@@ -276,8 +275,6 @@ public class View {
             return cell;
         });
 
-        WordList.getItems().add("abashed");
-        WordList.getItems().add("zombie");
         savefile = new Button("Save");
         savefile.setOnAction(e -> savefile());
         savefile.setPrefSize(60, 40);
@@ -306,9 +303,6 @@ public class View {
 
         this.stage.setScene(scene);
         this.stage.show();
-
-
-
 
         this.model.playRound();
         System.out.println("asd");
@@ -386,7 +380,6 @@ public class View {
         if(time <= 0){
             int state = model.timer();
             if (state == 2){
-                System.out.println("asas,dadkjasdd");
                 timeLine.stop();
                 showRoundEndMenu();
                 EndGameActual();            }
@@ -436,7 +429,6 @@ public class View {
     private void showRoundEndMenu(){
         timeLine.stop();
         new roundEndPopup(this);
-        System.out.println("test");
     }
     /**
      * End the game by opening the menu while sending score
@@ -521,7 +513,7 @@ public class View {
     public void changeColorContrast(){
         this.prev_Black = Color.BLACK;
         this.prev_Green = Color.WHITE;
-        this.prev_Red = Color.WHITE;
+        this.prev_Orange = Color.WHITE;
         this.prev_White = Color.WHITE;
         this.prev_Yellow = Color.YELLOW;
         this.prev_Cyan = Color.WHITE;
