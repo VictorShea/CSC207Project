@@ -15,6 +15,10 @@ import javafx.scene.layout.HBox;
 import javafx.scene.layout.VBox;
 import javafx.scene.text.Font;
 import javafx.util.*;
+
+import java.io.BufferedReader;
+import java.io.FileReader;
+import java.io.FileWriter;
 import java.io.IOException;
 import java.util.ArrayList;
 import java.util.Collections;
@@ -26,10 +30,10 @@ import java.util.HashMap;
 
 public class GameMenu extends Application{
     Stage stage;
-    Button startButton, loadButton, settingsButton, leaderboardButton; //buttons for functions
-    Button settingsButton2; //buttons for functions
-    Button loadButton2, settingsButton3; //buttons for functions
-    Button settingsButton4; //buttons for functions
+    Button startButton, loadButton, settingsButton, leaderboardButton; //buttons for functions in Menu
+    Button settingsButton2; //buttons for functions in Settings
+    Button loadButton2, settingsButton3; //buttons for functions Load Menu
+    Button settingsButton4; //buttons for functions in Leaderboard
     Slider timeSlider = new Slider(10, 120, 60);
     Slider roundsSlider = new Slider(1, 10, 5);
 
@@ -68,7 +72,9 @@ public class GameMenu extends Application{
     private int roundsValue = 5;
     private String name = nameDisplay.getText();
     private String name2 = nameDisplay2.getText();
-    private ArrayList listViewItems = new ArrayList<>();
+
+    ArrayList<String> listViewKeys = new ArrayList<String>();
+    ArrayList<Integer> listViewItems = new ArrayList<Integer>();
 
 
     /**
@@ -108,31 +114,86 @@ public class GameMenu extends Application{
     }
 
     /**
+     * saveLeaderboard method. Stores the current leaderboard in user files.
+     */
+
+    public void saveLeaderboard() throws IOException {
+        FileWriter f = new FileWriter("Leaderboard.txt");
+        for(int i = 0; i < listViewKeys.size(); i++){
+            f.write(listViewKeys.get(i) + "/a/" + listViewItems.get(i) + "\n");
+        }
+        f.close();
+    }
+
+    /**
+     * saveLeaderboard method. Stores the current leaderboard in user files.
+     */
+    public void loadLeaderboard() throws IOException {
+        FileReader f = new FileReader("Leaderboard.txt");
+        listViewItems.clear();
+        listViewKeys.clear();
+        BufferedReader fread = new BufferedReader(f);
+        String line = "";
+        while ((line = fread.readLine()) != null){
+            listViewKeys.add(line.split("/a/")[0]);
+            listViewItems.add(Integer.valueOf(line.split("/a/")[1]));
+        }
+        fread.close();
+        f.close();
+    }
+
+    /**
      * openMenu method. This method will be used to open up the menu again after the user finishes a game.
      */
     public void openMenu(){
         start(stage);
     }
     public void openMenu(HashMap<String, Integer> score){
-        System.out.println(score);
+
+        listViewKeys.addAll(score.keySet());
+        listViewItems.addAll(score.values());
+
+        ArrayList<String> tempListViewKeys = new ArrayList<String>();
+        ArrayList<Integer> tempListViewItems = new ArrayList<Integer>();
+
+        int size = listViewKeys.size();
+
+        for (int i = 0; i < size; i++) {
+            int maxNumPos = 0;
+            for (int j = 0; j < listViewKeys.size(); j++) {
+                if (listViewItems.get(maxNumPos) <= listViewItems.get(j)) {
+                    maxNumPos = j;
+                }
+            }
+
+            tempListViewKeys.add(listViewKeys.get(maxNumPos));
+            tempListViewItems.add(listViewItems.get(maxNumPos));
+            listViewKeys.remove(maxNumPos);
+            listViewItems.remove(maxNumPos);
+        }
+
+        listViewKeys = tempListViewKeys;
+        listViewItems = tempListViewItems;
+
+
+        try{
+            saveLeaderboard();
+        } catch (IOException e) {
+            throw new RuntimeException(e);
+        }
+
         start(stage);
-
     }
-//        if(listViewItems.size() <= 10 & listViewItems.size() >= 0) {
-//            for(String a : score.keySet()) {
-//                listViewItems.add(score.get(a));
-//                Collections.sort(listViewItems);
-//                Collections.reverse(listViewItems);
-//            }
-//        }
-//    }
-
 
     /**
      * setUpButtons method. Configures all Buttons, Sliders, and Labels.
      */
 
     private void setUpButtons() {
+        try{
+        loadLeaderboard();} catch (IOException e) {
+            throw new RuntimeException(e);
+        }
 
         //Configure the main gridpane to set the buttons on
 
@@ -168,9 +229,9 @@ public class GameMenu extends Application{
 
         //Configure settings menu labels, buttons, sliders, and a sub-GridPane
         //Sets the menu labels, buttons and sliders on the sub-GridPane
-        //Labels: Settings, timeCaption, roundsCaption, playerCaption, timeValueLabel
+        //Labels: Settings, timeCaption, roundsCaption, playerCaption, contrastCaption, voiceCaption, timeValueLabel
         //Sliders: Rounds, Time
-        //Buttons: Human/Computer, 4x4/5x5, Exit Settings
+        //Buttons: Human/Computer, 4x4/5x5, Exit Settings, Voice: On/Off, Color Contrast: On/Off
 
         ModeLabel2.setMinWidth(250);
         ModeLabel2.setFont(new Font(100));
@@ -393,8 +454,8 @@ public class GameMenu extends Application{
         vBox.setAlignment(Pos.CENTER);
         GridPane.setConstraints(vBox, 1, 2);
 
-        //Tracks User inputs in the settings menu, checks if the user clicks any sliders or any buttons and sends them
-        //to the appropriate sub menu.
+        //Tracks User inputs in the settings menu, checks if the user clicks any sliders or any buttons it alters the
+        //text and stores the correct settings.
 
         subGridPane.getChildren().removeAll(playerLabel2, nameDisplay2);
 
@@ -468,7 +529,6 @@ public class GameMenu extends Application{
         });
 
         VoiceButton.setOnAction(e -> {
-//            System.out.println("work");
             if(VoiceButton.getText().equals("On")){
                 voice = false;
                 VoiceButton.setText("Off");
@@ -535,7 +595,7 @@ public class GameMenu extends Application{
         this.stage.setTitle("Load Menu");
         gridPane.getChildren().clear();
 
-        //Adds the startButton, loadButton, and settingsButton to a VBox vBox and then sets it in the gridPane.
+        //Adds the startButton, loadButton, and settingsButton3 to a VBox vBox and then sets it in the gridPane.
 
         HBox TitleBox = new HBox(20, ModeLabel3);
         TitleBox.setPadding(new Insets(200, 20, 20, 20));
@@ -547,7 +607,7 @@ public class GameMenu extends Application{
         vBox.setAlignment(Pos.CENTER);
         GridPane.setConstraints(vBox, 0, 1);
 
-        //Tracks User inputs in the settings menu, checks if the user clicks any sliders or any buttons and sends them
+        //Tracks User inputs in the load menu, checks if the user clicks any sliders or any buttons and sends them
         //to the appropriate sub menu.
 
         loadButton2.setOnAction(e -> {
@@ -585,13 +645,20 @@ public class GameMenu extends Application{
 
     private void LeaderBoardMenu() {
 
+        //Sets the title of the stage to "LeaderBoardMenu" and clears the previous items on the pane for the current one.
+
         stage.setTitle("Leaderboard Menu");
         gridPane.getChildren().clear();
 
+        //Adds the ModeLabel4, listView, to their own HBoxes, settingsButton4 to a VBox vBox and then sets it in the gridPane.
+
         ListView listView = new ListView();
-        for(Object a : listViewItems){
-            listView.getItems().add(a);
+
+        System.out.println(listView.getItems());
+        for(int i = 0 ; i < listViewItems.size(); i++){
+            listView.getItems().add(listViewKeys.get(i) + " : " + listViewItems.get(i));
         }
+
         listView.setFixedCellSize(20);
         listView.setMaxWidth(1000);
         listView.setStyle("-fx-text-fill: #e8e6e3");
@@ -612,10 +679,15 @@ public class GameMenu extends Application{
         vBox.setAlignment(Pos.CENTER);
         GridPane.setConstraints(vBox, 1, 2);
 
+        //Tracks User inputs in the AND checks if the user clicks any sliders or any buttons and sends them
+        //to the appropriate sub menu.
+
         settingsButton4.setOnAction(e -> {
             Menu();
             gridPane.requestFocus();
         });
+
+        //sets the fade transitions for the menu components as it loads in.
 
         FadeTransition fade = new FadeTransition();
         fade.setDuration(Duration.millis(1000));
@@ -637,6 +709,8 @@ public class GameMenu extends Application{
         fade3.setToValue(10);
         fade3.setNode(TitleBox2);
         fade3.play();
+
+        //Adds the TitleBox and vBox to the gridPane and then shows it on the stage.
 
         gridPane.getChildren().addAll(TitleBox, TitleBox2, vBox);
         stage.show();

@@ -1,4 +1,5 @@
 package Game.View;
+
 import Game.GameMenu;
 import Game.Model.GameController;
 import javafx.animation.KeyFrame;
@@ -60,6 +61,15 @@ public class View {
     Color prev_Cyan = Color.rgb(192, 223, 161);
     Color prev_Right = Color.GREEN;
     Color prev_Wrong = Color.RED;
+    
+    /**
+     * Intialize all basic variable and object behaviour
+     * @param stage shown
+     * @param model data for the game
+     * @param menu menu class to reopen when game end
+     */
+        //intialized all variable
+        
     public View(Stage stage, GameController model, GameMenu menu, Boolean voice, String name, String name2, boolean colorContrast) {
         if(colorContrast){
             changeColorContrast();
@@ -85,10 +95,11 @@ public class View {
 
         gc = canvas.getGraphicsContext2D();
 
+
         canvas.setOnMouseClicked(new EventHandler<MouseEvent>() {
             @Override
             public void handle(MouseEvent k) {
-
+                //process if user release (word inputted)
                 if(model.inputWord(getSelectedPointWord())){
                     redraw(prev_Right);
                     PauseTransition pause = new PauseTransition(
@@ -117,10 +128,10 @@ public class View {
         canvas.setOnMouseMoved(new EventHandler<MouseEvent>() {
             @Override
             public void handle(MouseEvent k) {
+                //play sound
                 int loc_x = (int)(k.getX() / blockSize);
                 int loc_y = (int)(k.getY() / blockSize);
                 System.out.println(loc_x + " " + loc_y);
-                System.out.println(Voice);
                 if(Voice & (Current.x != loc_x || Current.y != loc_y)){
                     System.out.println(model.grid.getStrAt(loc_x, loc_y));
                     Converter.playSound(model.grid.getStrAt(loc_x, loc_y));
@@ -133,6 +144,7 @@ public class View {
         canvas.setOnMouseExited(new EventHandler<MouseEvent>() {
             @Override
             public void handle(MouseEvent mouseEvent) {
+                //reset check on play sound if user exit the canvas
                 Current = new TupleInt(-1, -1);
             }
         });
@@ -140,6 +152,7 @@ public class View {
         canvas.setOnMouseDragged(new EventHandler<MouseEvent>() {
             @Override
             public void handle(MouseEvent k) {
+                //add buttons to selected when hold
                 int loc_x = (int)(k.getX() / blockSize);
                 int loc_y = (int)(k.getY() / blockSize);
                 try{
@@ -148,7 +161,6 @@ public class View {
                     return;
                 }
 
-                System.out.println(Voice);
                 if(Voice & (Current.x != loc_x || Current.y != loc_y)){
                     System.out.println(model.grid.getStrAt(loc_x, loc_y));
                     Converter.playSound(model.grid.getStrAt(loc_x, loc_y));
@@ -234,6 +246,7 @@ public class View {
         wordDefinition.setAnchorY(100);
 
         WordList.setCellFactory(lv -> {
+            //change cell to now create definition popup when hovered
             ListCell<String> cell = new ListCell<String>() {
                 @Override
                 public void updateItem(String item, boolean empty) {
@@ -289,7 +302,12 @@ public class View {
         redraw();
         
     }
+
+    /**
+     * Update popup, move to current mouse location and update content to follow current active word.
+     */
     private void UpdatePopup(){
+        //update popup
         if(CurrentWord.equals(ActiveWord)){
             return;
         }
@@ -311,16 +329,25 @@ public class View {
         wordDefinitionLabel.setText(out.substring(1));
     }
 
+    /**
+     * update display to match model
+     */
     private void UpdateWordDIsplay(){
         WordList.getItems().clear();
         WordList.getItems().addAll(model.wordlist());
     }
 
+    /**
+     * update round to match model
+     */
     private void UpdateRoundLabel(){
         roundLabel.setText(Integer.toString(model.curRounds) + "/" + Integer.toString(model.rounds));
         PlayerNameLabel.setText(model.getPlayerName());
     }
 
+    /**
+     * reduce time by 1 and notify model if timer ran out
+     */
     private void Timer(){
         time += -1;
         timerLabel.setText(Integer.toString(time));
@@ -343,6 +370,10 @@ public class View {
         }
     }
 
+    /**
+     * convert the list of selected cells to a word
+     * @return word currently selected
+     */
     private String getSelectedPointWord(){
         StringBuilder out = new StringBuilder();
         for (TupleInt point: selectedPoint ){
@@ -352,6 +383,9 @@ public class View {
 
     }
 
+    /**
+     * start new round
+     */
     public void startRound(){
         if(gameClosed){
             return;
@@ -365,11 +399,17 @@ public class View {
         redraw();
     }
 
+    /**
+     * end round while showing round end popup
+     */
     private void showRoundEndMenu(){
         timeLine.stop();
         new roundEndPopup(this);
         System.out.println("test");
     }
+    /**
+     * End the game by opening the menu while sending score
+     */
     private void EndGameActual(){
         gameClosed = true;
         timeLine.stop();
@@ -381,12 +421,21 @@ public class View {
 
         menu.openMenu(score);
     }
+    /**
+     * End the game by opening the menu
+     */
     private void EndGame(){
         gameClosed = true;
         timeLine.stop();
         menu.openMenu();
     }
 
+    /**
+     * return if selected point contain the current cell
+     * @param x axis of the cell
+     * @param y axis of the cell
+     * @return true iff the cell is selected
+     */
     private int selectedPointContain(int x, int y){
         for(int i = 0; i < selectedPoint.size(); i++){
             if (selectedPoint.get(i).x == x && selectedPoint.get(i).y == y){
@@ -396,10 +445,17 @@ public class View {
         return -1;
     }
 
+    /**
+     * default redraw canvas with the selected point colored yellow
+     */
     private void redraw(){
         redraw(prev_Yellow);
     }
 
+    /**
+     * redraw canvas with selected point colored as input
+     * @param colorSelected color of selected point
+     */
     private void redraw(Color colorSelected){
         int shift = 10;
         gc.setStroke(prev_White);
@@ -441,6 +497,4 @@ public class View {
         this.prev_Right = Color.WHITE;
         this.prev_Wrong = Color.DARKBLUE;
     }
-
-
 }
