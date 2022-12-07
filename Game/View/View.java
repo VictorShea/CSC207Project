@@ -23,7 +23,6 @@ import javafx.scene.text.TextAlignment;
 import javafx.stage.Popup;
 import javafx.stage.Stage;
 import javafx.util.Duration;
-
 import java.util.HashMap;
 import java.util.LinkedList;
 import java.util.List;
@@ -53,6 +52,7 @@ public class View {
     String CurrentWord;
     String ActiveWord;
     Label wordDefinitionTitle;
+    Boolean Voice;
 
     /**
      * Intialize all basic variable and object behaviour
@@ -60,13 +60,13 @@ public class View {
      * @param model data for the game
      * @param menu menu class to reopen when game end
      */
-    public View(Stage stage, GameController model, GameMenu menu) {
         //intialized all variable
+    public View(Stage stage, GameController model, GameMenu menu, Boolean voice, String name, String name2) {
         gameClosed = false;
         this.menu = menu;
         Current = new TupleInt(-1, -1);
         selectedPoint = new LinkedList<>();
-
+        Voice = voice;
         this.stage = stage;
 
         this.model = model;
@@ -120,7 +120,7 @@ public class View {
                 int loc_x = (int)(k.getX() / blockSize);
                 int loc_y = (int)(k.getY() / blockSize);
                 System.out.println(loc_x + " " + loc_y);
-                if(Current.x != loc_x || Current.y != loc_y){
+                if(Voice & (Current.x != loc_x || Current.y != loc_y)){
                     System.out.println(model.grid.getStrAt(loc_x, loc_y));
                     Converter.playSound(model.grid.getStrAt(loc_x, loc_y));
                 }
@@ -149,7 +149,7 @@ public class View {
                     return;
                 }
 
-                if(Current.x != loc_x || Current.y != loc_y){
+                if(Voice & (Current.x != loc_x || Current.y != loc_y)){
                     System.out.println(model.grid.getStrAt(loc_x, loc_y));
                     Converter.playSound(model.grid.getStrAt(loc_x, loc_y));
                 }
@@ -346,8 +346,7 @@ public class View {
                 System.out.println("asas,dadkjasdd");
                 timeLine.stop();
                 showRoundEndMenu();
-                EndGame();
-            }
+                EndGameActual();            }
             if (state == 1){
                 timeLine.stop();
                 showRoundEndMenu();
@@ -396,7 +395,20 @@ public class View {
         new roundEndPopup(this);
         System.out.println("test");
     }
+    /**
+     * End the game by opening the menu while sending score
+     */
+    private void EndGameActual(){
+        gameClosed = true;
+        timeLine.stop();
+        HashMap<String, Integer> score = new HashMap<String, Integer>();
+        score.put(model.getPlayerName(0), model.getPoints(0));
+        if (model.gamemode != GameController.Gamemode.Computer){
+            score.put(model.getPlayerName(1), model.getPoints(1));
+        }
 
+        menu.openMenu(score);
+    }
     /**
      * End the game by opening the menu
      */

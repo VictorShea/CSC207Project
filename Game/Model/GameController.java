@@ -3,19 +3,20 @@ package Game.Model;
 import java.util.*;
 
 public class GameController {
+    private String name1, name2;
     public int size;
     public int timer;
     public int rounds;
     public int curRounds;
     private State currentState;
-    private Gamemode gamemode;
+    public Gamemode gamemode;
     private NewStats stats;
     public BoggleGrid grid;
     private Dictionary dict;
     private HashMap<String, ArrayList<Position>> allWords;
 
 
-    public GameController(int size, int timer, boolean gameMode, int rounds){
+    public GameController(int size, int timer, boolean gameMode, int rounds, String name1, String name2){
         this.size = size;
         this.timer = timer;
         this.rounds = rounds;
@@ -26,6 +27,8 @@ public class GameController {
         this.stats = new NewStats();
         this.dict = new Dictionary("wordlist.txt");
         this.allWords = new HashMap<String, ArrayList<Position>>();
+        this.name1 = name1;
+        this.name2 = name2;
     }
 
     /**
@@ -249,30 +252,30 @@ public class GameController {
     public String getPlayerName(){
         if(this.gamemode == Gamemode.Computer){
             if(this.currentState == State.You){
-                return "Player";
+                return name1;
             }
             else{return "Computer";}
         }
 
         if(this.currentState == State.You){
-            return "Player 1";
+            return name1;
         }
-        return "Player 2";
+        return name2;
     }
 
     //returns the specified player
     public String getPlayerName(int marker){
         if(marker==0){
             if(this.gamemode == Gamemode.Computer){
-                return "Player";
+                return name1;
             }
-            else{return "Player 1";}
+            else{return name1;}
         }
         else{
             if(this.gamemode == Gamemode.Computer){
                 return "Computer";
             }
-            else{return "Player 2";}
+            else{return name2;}
         }
     }
 
