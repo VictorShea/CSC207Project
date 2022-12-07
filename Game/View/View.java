@@ -53,7 +53,15 @@ public class View {
     String ActiveWord;
     Label wordDefinitionTitle;
     Boolean Voice;
-
+    Color prev_Black = Color.BLACK;
+    Color prev_Green = Color.GREEN;
+    Color prev_Red = Color.RED;
+    Color prev_White = Color.WHITE;
+    Color prev_Yellow = Color.YELLOW;
+    Color prev_Cyan = Color.rgb(192, 223, 161);
+    Color prev_Right = Color.GREEN;
+    Color prev_Wrong = Color.RED;
+    
     /**
      * Intialize all basic variable and object behaviour
      * @param stage shown
@@ -61,7 +69,11 @@ public class View {
      * @param menu menu class to reopen when game end
      */
         //intialized all variable
-    public View(Stage stage, GameController model, GameMenu menu, Boolean voice, String name, String name2) {
+        
+    public View(Stage stage, GameController model, GameMenu menu, Boolean voice, String name, String name2, boolean colorContrast) {
+        if(colorContrast){
+            changeColorContrast();
+        }
         gameClosed = false;
         this.menu = menu;
         Current = new TupleInt(-1, -1);
@@ -75,7 +87,7 @@ public class View {
         this.stage.setTitle("CSC207 Project");
 
         borderPane = new BorderPane();
-        borderPane.setBackground(new Background(new BackgroundFill(Color.BLACK, CornerRadii.EMPTY, Insets.EMPTY)));
+        borderPane.setBackground(new Background(new BackgroundFill(prev_Black, CornerRadii.EMPTY, Insets.EMPTY)));
 
         //create canvas
         canvas = new Canvas(size * blockSize, size * blockSize);
@@ -89,7 +101,7 @@ public class View {
             public void handle(MouseEvent k) {
                 //process if user release (word inputted)
                 if(model.inputWord(getSelectedPointWord())){
-                    redraw(Color.GREEN);
+                    redraw(prev_Right);
                     PauseTransition pause = new PauseTransition(
                             Duration.seconds(0.4)
                     );
@@ -98,7 +110,7 @@ public class View {
                     });
                     pause.play();
                 } else{
-                    redraw(Color.RED);
+                    redraw(prev_Wrong);
                     PauseTransition pause = new PauseTransition(
                             Duration.seconds(0.4)
                     );
@@ -189,12 +201,12 @@ public class View {
         ScoreLabel = new Label("Point: 0");
         ScoreLabel.setFont(new Font(30));
         ScoreLabel.setId("ScoreLabel");
-        ScoreLabel.setTextFill(Color.RED);
+        ScoreLabel.setTextFill(prev_Red);
 
         timerLabel = new Label(Integer.toString(time));
         timerLabel.setFont(new Font(30));
         timerLabel.setId("TimerLabel");
-        timerLabel.setTextFill(Color.RED);
+        timerLabel.setTextFill(prev_Red);
 
         display.setTop(wordDisplay);
         display.setLeft(ScoreLabel);
@@ -205,9 +217,9 @@ public class View {
         PlayerNameLabel = new Label();
         UpdateRoundLabel();
         roundLabel.setFont(new Font(30));
-        roundLabel.setTextFill(Color.RED);
+        roundLabel.setTextFill(prev_Red);
         PlayerNameLabel.setFont(new Font(30));
-        PlayerNameLabel.setTextFill(Color.RED);
+        PlayerNameLabel.setTextFill(prev_Red);
 
         SecondaryDisplay.setRight(roundLabel);
         SecondaryDisplay.setLeft(PlayerNameLabel);
@@ -221,13 +233,13 @@ public class View {
         wordDefinitionLabel = new Label("asd\nasd\nasd");
         wordDefinitionTitle = new Label("asdsadas");
         wordDefinitionTitle.setFont(new Font(20));
-        wordDefinitionTitle.setTextFill(Color.WHITE);
+        wordDefinitionTitle.setTextFill(prev_White);
         wordDefinitionTitle.setStyle("-fx-background-color: Black;");
 
-        wordDefinitionLabel.setTextFill(Color.WHITE);
+        wordDefinitionLabel.setTextFill(prev_White);
         wordDefinitionLabel.setStyle("-fx-background-color: Black;");
         VBox temp = new VBox(wordDefinitionTitle, wordDefinitionLabel);
-        temp.setBackground(new Background(new BackgroundFill(Color.BLACK, CornerRadii.EMPTY, Insets.EMPTY)));
+        temp.setBackground(new Background(new BackgroundFill(prev_Black, CornerRadii.EMPTY, Insets.EMPTY)));
         temp.setStyle("-fx-border-color: cyan");
         wordDefinition.getContent().add(temp);
         wordDefinition.setAnchorX(100);
@@ -437,7 +449,7 @@ public class View {
      * default redraw canvas with the selected point colored yellow
      */
     private void redraw(){
-        redraw(Color.YELLOW);
+        redraw(prev_Yellow);
     }
 
     /**
@@ -446,32 +458,43 @@ public class View {
      */
     private void redraw(Color colorSelected){
         int shift = 10;
-        gc.setStroke(Color.WHITE);
-        gc.setFill(Color.BLACK);
+        gc.setStroke(prev_White);
+        gc.setFill(prev_Black);
         gc.fillRect(0, 0, size * blockSize, size * blockSize);
         gc.setTextAlign(TextAlignment.CENTER);
 
         for(int i = 0; i < size; i++){
             for(int j = 0; j < size; j++) {
-                gc.setFill(Color.rgb(192, 223, 161));
+                gc.setFill(prev_Cyan);
                 gc.fillRect((blockSize * i) + shift, (blockSize * j) + shift, blockSize - (2 * shift), blockSize - (2 * shift));
 
 
                 if(selectedPointContain(i, j) != -1){
                     gc.setFill(colorSelected);
                     gc.fillRect((blockSize * i) + shift + 5, (blockSize * j) + shift + 5, blockSize - (2 * shift) - 10, blockSize - (2 * shift) - 10);
-                    gc.setStroke(Color.BLACK);
+                    gc.setStroke(prev_Black);
                     gc.strokeText(model.grid.getStrAt(i, j), blockSize * i + (blockSize / 2), blockSize * j + (blockSize / 2));
 
                 }
                 else {
-                    gc.setFill(Color.BLACK);
+                    gc.setFill(prev_Black);
                     gc.fillRect((blockSize * i) + shift + 5, (blockSize * j) + shift + 5, blockSize - (2 * shift) - 10, blockSize - (2 * shift) - 10);
-                    gc.setStroke(Color.WHITE);
+                    gc.setStroke(prev_White);
                     gc.strokeText(model.grid.getStrAt(i, j), blockSize * i + (blockSize / 2), blockSize * j + (blockSize / 2));
 
                 }
             }
         }
+    }
+
+    public void changeColorContrast(){
+        this.prev_Black = Color.BLACK;
+        this.prev_Green = Color.WHITE;
+        this.prev_Red = Color.WHITE;
+        this.prev_White = Color.WHITE;
+        this.prev_Yellow = Color.YELLOW;
+        this.prev_Cyan = Color.WHITE;
+        this.prev_Right = Color.WHITE;
+        this.prev_Wrong = Color.DARKBLUE;
     }
 }
