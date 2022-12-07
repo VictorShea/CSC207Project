@@ -278,7 +278,7 @@ public class GameController implements Serializable {
 
 
         //If there are more rounds to be played, start a new round.
-        if (this.curRounds < this.rounds) {
+        if (this.curRounds < this.rounds+1) {
                 this.currentState = State.You;
                 return 1;
             }
@@ -311,7 +311,7 @@ public class GameController implements Serializable {
         if (!allWords.containsKey(word.toUpperCase())){
             return false;
         }
-        if (this.stats.getPlayerWords().contains(word) || this.stats.getOpponentWords().contains(word)){
+        if (this.stats.getPlayerWords().contains(word.toLowerCase()) || this.stats.getOpponentWords().contains(word.toLowerCase())){
             return false;
         }
         if(this.currentState == State.You){
