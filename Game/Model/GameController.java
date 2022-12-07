@@ -8,6 +8,8 @@ import java.util.*;
  * GameController will actually control the game, keep track of all data.
  */
 public class GameController implements Serializable {
+    private String name1, name2;
+
     /**
      * stores the size of board the player wants
      */
@@ -35,6 +37,7 @@ public class GameController implements Serializable {
     /**
      * stores points and played words
      */
+
     private NewStats stats;
     /**
      * stores the grid played on
@@ -59,8 +62,8 @@ public class GameController implements Serializable {
      * Generates random id.
      * Converts gamemode bool to enum class.
      * Initializes NewStats, currentState, Dictionary and allWords.
-     */
-    public GameController(int size, int timer, boolean gameMode, int rounds){
+     */ 
+    public GameController(int size, int timer, boolean gameMode, int rounds, String name1, String name2){
         this.size = size;
         this.timer = timer;
         this.rounds = rounds;
@@ -72,6 +75,8 @@ public class GameController implements Serializable {
         this.dict = new Dictionary("wordlist.txt");
         this.allWords = new HashMap<String, ArrayList<Position>>();
         this.id = new Random().nextInt(999999) + 100000;
+        this.name1 = name1;
+        this.name2 = name2;
     }
 
     /**
@@ -350,15 +355,15 @@ public class GameController implements Serializable {
     public String getPlayerName(){
         if(this.gamemode == Gamemode.Computer){
             if(this.currentState == State.You){
-                return "Player";
+                return name1;
             }
             else{return "Computer";}
         }
 
         if(this.currentState == State.You){
-            return "Player 1";
+            return name1;
         }
-        return "Player 2";
+        return name2;
     }
 
     /*
@@ -367,15 +372,15 @@ public class GameController implements Serializable {
     public String getPlayerName(int marker){
         if(marker==0){
             if(this.gamemode == Gamemode.Computer){
-                return "Player";
+                return name1;
             }
-            else{return "Player 1";}
+            else{return name1;}
         }
         else{
             if(this.gamemode == Gamemode.Computer){
                 return "Computer";
             }
-            else{return "Player 2";}
+            else{return name2;}
         }
     }
 
