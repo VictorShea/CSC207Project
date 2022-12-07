@@ -13,6 +13,12 @@ public class DefinitionProcess {
 
     static RandomAccessFile raf;
     static LinkedHashMap<String, HashMap<String, List<String>>> cachedDefinition;
+
+    /**
+     * get the definition of the input
+     * @param word the searched definition
+     * @return the definition as a hashmap with the key being the type of word and the value being a list of possible definition
+     */
     public static HashMap<String, List<String>> get_defintion(String word) {
         if(cachedDefinition.containsKey(word)){
             return cachedDefinition.get(word);
@@ -38,6 +44,11 @@ public class DefinitionProcess {
         }
         return out;
     }
+
+    /**
+     * initialize the required data for dictionary
+     * @throws IOException defloc file or definition file not found
+     */
     public static void initializeDictionary() throws IOException, ClassNotFoundException {
         cachedDefinition = new LinkedHashMap<>();
         file = new FileInputStream("DefLoc.ser");
