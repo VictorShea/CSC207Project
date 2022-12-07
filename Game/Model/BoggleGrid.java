@@ -1,10 +1,13 @@
 package Game.Model;
 
+import java.io.Serializable;
+
 /**
  * The BoggleGrid class for the first Assignment in CSC207, Fall 2022
  * The BoggleGrid represents the grid on which we play Boggle 
  */
-public class BoggleGrid {
+public class BoggleGrid implements Serializable {
+
     /**
      * size of grid
      */  
@@ -19,7 +22,10 @@ public class BoggleGrid {
      * @param size  The size of the Boggle grid to initialize
      */
     public BoggleGrid(int size) {
+
         this.size = size;
+        this.board = new char[size][size];
+
     }
 
     /* 
@@ -29,12 +35,11 @@ public class BoggleGrid {
      * @param letters a string of letters, one for each grid position.
      */
     public void initalizeBoard(String letters) {
-        this.board = new char[size][size];
-        for(int i = 0; i < this.size; i++){
-            for(int j = 0; j < this.size; j++){
-                this.board[i][j] = letters.charAt(i * size + j);
-            }
-        }
+        int i = 0;
+        for (int row = 0; row < numRows(); row++){
+            for (int col = 0; col < numCols(); col++){
+                this.board[row][col] = letters.charAt(i);
+                i += 1;}}
     }
 
     /*
@@ -75,5 +80,8 @@ public class BoggleGrid {
     public char getCharAt(int row, int col) {
         return this.board[row][col];
     }
-    public String getStrAt(int row, int col){return String.valueOf(this.board[row][col]);}
+
+    public String getStrAt(int row, int col) {
+        return Character.toString(this.board[row][col]);}
+
 }

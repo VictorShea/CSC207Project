@@ -1,16 +1,13 @@
 package Game.Model;
 
-import java.io.BufferedReader;
-import java.io.FileNotFoundException;
-import java.io.FileReader;
-import java.io.IOException;
+import java.io.*;
 import java.util.TreeSet;
 
 /**
- * The Dictionary class for the first Assignment in CSC207, Fall 2022
+ * The Dictionary class.
  * The Dictionary will contain lists of words that are acceptable for Boggle 
  */
-public class Dictionary {
+public class Dictionary implements Serializable {
 
     /**
      * set of legal words for Boggle

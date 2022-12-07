@@ -1,9 +1,11 @@
 package Game.Model;
 
+import java.io.Serializable;
+
 /**
  * Class to hold Position information associated with a BoggleGrid
  */
-public class Position {
+public class Position implements Serializable {
     /**
      * row
      */    

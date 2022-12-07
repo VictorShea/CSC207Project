@@ -1,5 +1,6 @@
 package Game;
 
+import Game.Save.Save;
 import Game.StartGame;
 import Game.View.DefinitionProcess;
 import javafx.animation.FadeTransition;
@@ -23,6 +24,9 @@ import java.io.IOException;
 import java.util.ArrayList;
 import java.util.Collections;
 import java.util.HashMap;
+
+import java.util.LinkedList;
+import java.util.Objects;
 
 /** Represents a Menu GUI for Boggle.
  * Includes 3 submenus Menu, Settings, and Load Menu
@@ -70,12 +74,14 @@ public class GameMenu extends Application{
     private boolean voice = false;
     private int timeValue = 60;
     private int roundsValue = 5;
+
+    ListView<String> fileList;
+    
     private String name = nameDisplay.getText();
     private String name2 = nameDisplay2.getText();
 
     ArrayList<String> listViewKeys = new ArrayList<String>();
     ArrayList<Integer> listViewItems = new ArrayList<Integer>();
-
 
     /**
      * Main method
@@ -339,6 +345,9 @@ public class GameMenu extends Application{
         settingsButton3.setFont(new Font(12));
         settingsButton3.setStyle("-fx-background-color: #17871b; -fx-text-fill: white;");
 
+
+        fileList = new ListView<>();
+
         //Configure leaderboard menu buttons
         //Labels: Leaderboard Menu
         //Buttons: Exit Leaderboard
@@ -351,6 +360,7 @@ public class GameMenu extends Application{
         settingsButton4.setPrefSize(400, 50);
         settingsButton4.setFont(new Font(12));
         settingsButton4.setStyle("-fx-background-color: #17871b; -fx-text-fill: white;");
+
 
     }
 
@@ -382,8 +392,9 @@ public class GameMenu extends Application{
         //sends them to the appropriate sub menu.
 
         startButton.setOnAction(e -> {
-            new StartGame(stage, size, timeValue, human, roundsValue, this, voice, name, name2, colorContrast);
-            System.out.println(voice);
+
+            StartGame.StartGame(stage, size, timeValue, human, roundsValue, this, voice, name, name2, colorContrast);
+
             gridPane.requestFocus();
         });
 
@@ -581,7 +592,8 @@ public class GameMenu extends Application{
         //Adds the subGridTitleBox and vBox to the gridPane and then shows it on the stage.
 
         gridPane.getChildren().addAll(subGridPane, TitleBox, vBox);
-        stage.show();
+        this.stage.show();
+
     }
 
     /**
@@ -590,7 +602,7 @@ public class GameMenu extends Application{
 
     private void LoadMenu() {
 
-        //Sets the title of the stage to "Load Menu" and clears the previous items on the pane for the current one.
+        //Sets the title of the stage to "Load Menu" and clearsts the previous items on the pane for the current one.
 
         this.stage.setTitle("Load Menu");
         gridPane.getChildren().clear();
@@ -598,22 +610,36 @@ public class GameMenu extends Application{
         //Adds the startButton, loadButton, and settingsButton3 to a VBox vBox and then sets it in the gridPane.
 
         HBox TitleBox = new HBox(20, ModeLabel3);
-        TitleBox.setPadding(new Insets(200, 20, 20, 20));
+        TitleBox.setPadding(new Insets(0, 20, 20, 20));
         TitleBox.setAlignment(Pos.CENTER);
-        GridPane.setConstraints(TitleBox, 0, 0);
 
-        VBox vBox = new VBox(20, loadButton2, settingsButton3);
+        VBox vBox = new VBox(20, TitleBox, fileList, loadButton2, settingsButton3);
         vBox.setPadding(new Insets(20, 20, 20, 20));
-        vBox.setAlignment(Pos.CENTER);
-        GridPane.setConstraints(vBox, 0, 1);
+        vBox.setAlignment(Pos.TOP_CENTER);
+        String[] path = Game.Save.Load.getSaves();
+        LinkedList<String> ProcessedData = new LinkedList<String>();
+        for(int i = 0; i < path.length; i++){
+            System.out.println(path[i]);
+            String[] word = path[i].split("_");
+            String name = word[0];
+            String time = word[2];
+            String date = time.split("T")[0];
+            time = time.split("T")[1].split("[.]")[0].replace(",", ":");
+            ProcessedData.add(name + " " + date + " " + time);
+        }
+        fileList.getItems().clear();
+        fileList.getItems().addAll(ProcessedData);
+        //Tracks User inputs in the settings menu, checks if the user clicks any sliders or any buttons and sends them
 
-        //Tracks User inputs in the load menu, checks if the user clicks any sliders or any buttons and sends them
         //to the appropriate sub menu.
 
         loadButton2.setOnAction(e -> {
-            //LoadGame();
+            System.out.println(fileList.getSelectionModel().getSelectedItem());
+            if (!Objects.equals(fileList.getSelectionModel().getSelectedItem(), null)){
+                String filepath = path[fileList.getSelectionModel().getSelectedIndices().get(0)];
+                StartGame.loadGame(stage, this, "Game/Save/SaveFiles/" + filepath, voice, colorContrast);
+            }
             this.gridPane.requestFocus();
-            throw new java.lang.UnsupportedOperationException("Not supported yet.");
         });
 
         settingsButton3.setOnAction(e -> {
@@ -639,7 +665,7 @@ public class GameMenu extends Application{
 
         //Adds the TitleBox and vBox to the gridPane and then shows it on the stage.
 
-        gridPane.getChildren().addAll(TitleBox, vBox);
+        gridPane.getChildren().addAll(vBox);
         stage.show();
     }
 

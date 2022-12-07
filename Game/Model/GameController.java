@@ -1,32 +1,80 @@
 package Game.Model;
 
+import java.io.Serializable;
 import java.util.*;
 
-public class GameController {
+/**
+ * The GameController class.
+ * GameController will actually control the game, keep track of all data.
+ */
+public class GameController implements Serializable {
     private String name1, name2;
+
+    /**
+     * stores the size of board the player wants
+     */
     public int size;
+    /**
+     * stores how many seconds the player wants the round to end
+     */
     public int timer;
+    /**
+     * stores how many rounds the player wants
+     */
     public int rounds;
+    /**
+     * keeps track of what round is currently being played
+     */
     public int curRounds;
+    /**
+     * keeps track of whether it's the player's or opponent's term
+     */
     private State currentState;
-    public Gamemode gamemode;
+    /**
+     * stores the chosen gamemode
+     */
+    private Gamemode gamemode;
+    /**
+     * stores points and played words
+     */
+
     private NewStats stats;
+    /**
+     * stores the grid played on
+     */
     public BoggleGrid grid;
+    /**
+     * stores all acceptable words
+     */
     private Dictionary dict;
+    /**
+     * stores all acceptable words for this board
+     */
     private HashMap<String, ArrayList<Position>> allWords;
+    /**
+     * stores unique id for this specific game
+     */
+    private int id;
 
 
+    /* GameController constructor
+     * ----------------------
+     * Generates random id.
+     * Converts gamemode bool to enum class.
+     * Initializes NewStats, currentState, Dictionary and allWords.
+     */ 
     public GameController(int size, int timer, boolean gameMode, int rounds, String name1, String name2){
         this.size = size;
         this.timer = timer;
         this.rounds = rounds;
-        this.curRounds = 0;
+        this.curRounds = 1;
         this.currentState = State.You;
         if(gameMode) {this.gamemode = Gamemode.Human;}
         else{this.gamemode = Gamemode.Computer;}
         this.stats = new NewStats();
         this.dict = new Dictionary("wordlist.txt");
         this.allWords = new HashMap<String, ArrayList<Position>>();
+        this.id = new Random().nextInt(999999) + 100000;
         this.name1 = name1;
         this.name2 = name2;
     }
@@ -45,6 +93,10 @@ public class GameController {
                     "BJKQXZ", "CCNSTW", "CEIILT", "CEILPT", "CEIPST", "DDLNOR", "DDHNOT", "DHHLOR",
                     "DHLNOR", "EIIITT", "EMOTTT", "ENSSSU", "FIPRSY", "GORRVW", "HIPRRY", "NOOTUW", "OOOTTU"};
 
+    /*
+     * @param int that's the size of the board
+     * @return String a String of random letters (length 16 or 25 depending on the size of the grid)
+     */
     private String randomizeLetters(int size){
         if(size == 5){
             List<String> clone = new ArrayList<String>(List.of(dice_big_grid));
@@ -76,6 +128,13 @@ public class GameController {
             return result;}
     }
 
+    /*
+     * A function that finds all valid words on the boggle board.
+     *
+     * @param allWords A mutable list of all legal words that can be found, given the boggleGrid grid letters
+     * @param boggleDict A dictionary of legal words
+     * @param boggleGrid A boggle grid, with a letter at each position on the grid
+     */
     private void findAllWords(Map<String,ArrayList<Position>> allWords, Dictionary boggleDict, BoggleGrid boggleGrid) {
 
         for (int i = 0; i < this.grid.numRows(); i++) {
@@ -83,13 +142,22 @@ public class GameController {
                 ArrayList<Position> positions = new ArrayList<Position>();
                 Position searching = new Position(i, j);
                 String starter = Character.toString(this.grid.getCharAt(i, j));
-                each_position(allWords, this.grid, searching, starter, positions);
+                eachPosition(allWords, this.grid, searching, starter, positions);
             }
         }
     }
 
 
-    private void each_position(Map<String,ArrayList<Position>> allWords, BoggleGrid boggleGrid,
+    /*
+     * A function that finds all valid words on a specific position.
+     *
+     * @param allWords A mutable list of all legal words that can be found, given the boggleGrid grid letters
+     * @param boggleDict A dictionary of legal words
+     * @param boggleGrid A boggle grid, with a letter at each position on the grid
+     * @param Position The position being searched.
+     * @param Position Word found so far.
+     */
+    private void eachPosition(Map<String,ArrayList<Position>> allWords, BoggleGrid boggleGrid,
                                Position searching, String starter, ArrayList<Position> positions){
         positions.add(searching);
         boolean valid = this.dict.isPrefix(starter);
@@ -107,40 +175,49 @@ public class GameController {
 
 
             if(updater < boggleGrid.numRows() & !hasP(updater, col, positions)){
-                each_position(allWords, boggleGrid, new Position(updater, col),
+                eachPosition(allWords, boggleGrid, new Position(updater, col),
                         starter + boggleGrid.getCharAt(updater, col), new ArrayList<>(positions));}
 
             if(updatec < boggleGrid.numCols() & !hasP(row, updatec, positions)){
-                each_position(allWords, boggleGrid, new Position(row, updatec),
+                eachPosition(allWords, boggleGrid, new Position(row, updatec),
                         starter + boggleGrid.getCharAt(row, updatec), new ArrayList<>(positions));}
 
             if(minusr >= 0 & !hasP(minusr, col, positions)){
-                each_position(allWords, boggleGrid, new Position(minusr, col),
+                eachPosition(allWords, boggleGrid, new Position(minusr, col),
                         starter + boggleGrid.getCharAt(minusr, col), new ArrayList<>(positions));}
 
             if(minusc >= 0 & !hasP(row, minusc, positions)){
-                each_position(allWords, boggleGrid, new Position(row, minusc),
+                eachPosition(allWords, boggleGrid, new Position(row, minusc),
                         starter + boggleGrid.getCharAt(row, minusc), new ArrayList<>(positions));}
 
             if(minusr >= 0 & minusc >= 0 & !hasP(minusr, minusc, positions)){
-                each_position(allWords, boggleGrid, new Position(minusr, minusc),
+                eachPosition(allWords, boggleGrid, new Position(minusr, minusc),
                         starter + boggleGrid.getCharAt(minusr, minusc), new ArrayList<>(positions));}
 
             if(minusr >= 0 & updatec < boggleGrid.numCols() & !hasP(minusr, updatec, positions)){
-                each_position(allWords, boggleGrid, new Position(minusr, updatec),
+                eachPosition(allWords, boggleGrid, new Position(minusr, updatec),
                         starter + boggleGrid.getCharAt(minusr, updatec), new ArrayList<>(positions));}
 
             if(updater < boggleGrid.numRows() & minusc >= 0 & !hasP(updater, minusc, positions)){
-                each_position(allWords, boggleGrid, new Position(updater, minusc),
+                eachPosition(allWords, boggleGrid, new Position(updater, minusc),
                         starter + boggleGrid.getCharAt(updater, minusc), new ArrayList<>(positions));}
 
             if(updater < boggleGrid.numRows() & updatec < boggleGrid.numCols() & !hasP(updater, updatec, positions)){
-                each_position(allWords, boggleGrid, new Position(updater, updatec),
+                eachPosition(allWords, boggleGrid, new Position(updater, updatec),
                         starter + boggleGrid.getCharAt(updater, updatec), new ArrayList<>(positions));}
 
         }
     }
 
+    /*
+     * A function that checks if the position is valid.
+     *
+     * @param int Desired column.
+     * @param int Desired row.
+     * @param ArrayList<Position> List of valid positions.
+     *
+     * @return boolean If the position is valid.
+     */
     private boolean hasP(int row, int col, ArrayList<Position> positions) {
         for (Position position : positions) {
             if (position.getRow() == row & col == position.getCol()) {
@@ -151,7 +228,11 @@ public class GameController {
     }
 
 
-    //Initialize a board to play a round on.
+    /*
+     * Creates a new board.
+     *
+     * @param int Size of desired board.
+     */
     private void initializeBoard(int size){
         BoggleGrid grid = new BoggleGrid(size);
         String letters = randomizeLetters(size);
@@ -159,17 +240,22 @@ public class GameController {
         this.grid = grid;
     }
 
+    /*
+     * Start a new round.
+     */
     public void playRound(){
         //Clear past stats
         this.stats.newRound();
         // Initialize a board
         initializeBoard(this.size);
         //Get all legal words
-        findAllWords(this.allWords, this.dict, grid);
+        findAllWords(this.allWords, this.dict, this.grid);
     }
 
 
-    //Called every timer seconds
+    /*
+     * Change the round when the timer ends.
+     */
     public int timer(){
         //If the gamemode is Computer, allow the Computer to play, and end the round.
         if(this.gamemode == Gamemode.Computer) {
@@ -200,6 +286,10 @@ public class GameController {
         else {return 2;}
     }
 
+    /*
+     * Gets words from the computer.
+     * @param allWords A mutable list of all legal words that can be found, given the boggleGrid grid letters
+     */
     private void computerMove(){
         for (String word : this.allWords.keySet()){
             if(!this.stats.getPlayerWords().contains(word.toLowerCase())){
@@ -209,10 +299,19 @@ public class GameController {
     }
 
 
-    //input word (unchecked)
+    /*
+     * Takes user word input.
+     *
+     * @param String the verb inputted.
+     *
+     * @return boolean If the word was valid.
+     */
     public boolean inputWord(String word){
         // create a verify function
         if (!allWords.containsKey(word.toUpperCase())){
+            return false;
+        }
+        if (this.stats.getPlayerWords().contains(word) || this.stats.getOpponentWords().contains(word)){
             return false;
         }
         if(this.currentState == State.You){
@@ -227,7 +326,9 @@ public class GameController {
         return true;
     }
 
-    //display new words
+    /*
+     * Display new words.
+     */
     public Set<String> wordlist(){
        if(this.currentState == State.You){
            return this.stats.getPlayerWords();
@@ -248,7 +349,9 @@ public class GameController {
         return this.stats.getScoreOther();
     }
 
-    //returns the current player
+    /*
+     * Returns the current player.
+     */
     public String getPlayerName(){
         if(this.gamemode == Gamemode.Computer){
             if(this.currentState == State.You){
@@ -263,7 +366,9 @@ public class GameController {
         return name2;
     }
 
-    //returns the specified player
+    /*
+     * Returns specified player. .
+     */
     public String getPlayerName(int marker){
         if(marker==0){
             if(this.gamemode == Gamemode.Computer){
@@ -293,6 +398,9 @@ public class GameController {
         return this.stats.getTotalOther();
     }
 
+    /**
+     * enumarable types of players (human or computer)
+     */
     public enum Gamemode {
         Human("Human"),
         Computer("Computer");
@@ -303,6 +411,9 @@ public class GameController {
         }
     }
 
+    /**
+     * enumarable types of state (You or Opponent)
+     */
     public enum State {
         You("You"),
         Opponent("Opponent");
@@ -313,4 +424,19 @@ public class GameController {
         }
 
     }
+
+    public int getID(){
+        return this.id;
+    }
+
+    public HashMap<String, ArrayList<Position>> getAllWords(){
+        return this.allWords;
+    }
+
+    public NewStats getStats(){
+        return this.stats;
+    }
+
+
+
 }
